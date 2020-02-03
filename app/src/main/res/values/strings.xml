@@ -1,0 +1,41 @@
+<resources>
+    <string name="app_name">Dhamma Player</string>
+    <string name="tab_text_1">Schedule</string>
+    <string name="tab_text_2">Media</string>
+    <string name="tab_text_3">Events</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- schedule group xml layout -->
+    <string name="delete_button_text">Delete</string>
+
+    <!-- New schedule xml layout -->
+    <string name="new_schedule_activity_label">New Schedule</string>
+    <string name="prompt_label">Label</string>
+    <string name="prompt_time">Time</string>
+    <string name="prompt_days">Select Days</string>
+    <string name="prompt_media">Select Media Files</string>
+    <string name="audio_media">Audio</string>
+    <string name="video_media">Video</string>
+    <string name="save">Save Schedule</string>
+    <string name="media">Media Files</string>
+
+    <!-- Media player activity -->
+    <string name="media_player_activity_label">Dhamma Media Player</string>
+
+    <!-- Media selection menu -->
+    <string name="media_selection_activity_label">Media Selection</string>
+    <string name="ok">ok</string>
+
+    <!-- Media item xml layout -->
+    <string name="media_play">Play</string>
+    <string name="media_pause">Pause</string>
+
+    <!-- Audio player Service  -->
+    <string name="CHANNEL_ID">org.dhamma.dhammaplayer</string>
+    <string name="channel_name">Dhamma Player channel</string>
+    <string name="channel_description">Dhamma Media Player</string>
+    <string name="service_notification_text">Dhamma Media Player</string>
+
+</resources>

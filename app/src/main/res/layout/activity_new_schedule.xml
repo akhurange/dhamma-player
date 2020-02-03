@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".schedule.NewSchedule">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:orientation="vertical">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColorHint="@color/colorAccent">
+            <EditText
+                android:id="@+id/etLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/prompt_label"
+                android:inputType="textCapSentences"
+                android:maxLines="1"
+                android:singleLine="true" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"/>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColorHint="@color/colorAccent">
+            <EditText
+                android:id="@+id/etTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/prompt_time"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:focusable="false"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/prompt_days"
+            android:textColor="@color/colorAccent"
+            android:layout_marginBottom="8dp"/>
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="3"
+            android:rowCount="3"
+            android:orientation="horizontal">
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/cbSun"
+                android:text="Sunday"
+                android:checked="true"/>
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/cbMon"
+                android:text="Monday"
+                android:checked="true"/>
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/cbTue"
+                android:text="Tuesday"
+                android:checked="true"/>
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/cbWed"
+                android:text="Wednesday"
+                android:checked="true"/>
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/cbThu"
+                android:text="Thursday"
+                android:checked="true"/>
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/cbFri"
+                android:text="Friday"
+                android:checked="true"/>
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/cbSat"
+                android:text="Saturday"
+                android:checked="true"/>
+        </GridLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/prompt_media"
+            android:id="@+id/tvSelectMediaFiles"
+            android:textColor="@color/colorAccent"
+            android:layout_marginBottom="8dp"/>
+        <RadioGroup
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/rgMediaSelector"
+            android:orientation="horizontal">
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/rbAudio"
+                android:text="@string/audio_media"/>
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/rbVideo"
+                android:text="@string/video_media"/>
+        </RadioGroup>
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/lvMediaFiles"
+            android:clipToPadding="false"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/btSaveSchedule"
+            android:text="@string/save"
+            android:drawableStart="@android:drawable/ic_lock_idle_alarm"
+            android:drawablePadding="8dp"
+            android:layout_gravity="center_horizontal" />
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>

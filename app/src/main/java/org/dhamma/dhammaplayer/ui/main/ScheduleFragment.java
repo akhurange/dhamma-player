@@ -1,0 +1,96 @@
+package org.dhamma.dhammaplayer.ui.main;
+
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
+
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ListView;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import org.dhamma.dhammaplayer.DataRepository;
+import org.dhamma.dhammaplayer.R;
+import org.dhamma.dhammaplayer.database.ScheduleEntity;
+import org.dhamma.dhammaplayer.schedule.NewSchedule;
+import org.dhamma.dhammaplayer.schedule.ScheduleBuilderAdapter;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * A simple {@link Fragment} subclass.
+ * Activities that contain this fragment must implement the
+ * {@link ScheduleFragment.OnFragmentInteractionListener} interface
+ * to handle interaction events.
+ * Use the {@link ScheduleFragment#newInstance} factory method to
+ * create an instance of this fragment.
+ */
+public class ScheduleFragment extends Fragment {
+    private ScheduleBuilderAdapter mScheduleBuilderAdapter;
+    private ScheduleViewModel mScheduleViewModel;
+    private ArrayList<ScheduleEntity> mScheduleList;
+    private LiveData<List<ScheduleEntity>> mLiveScheduleList;
+
+    public ScheduleFragment() {
+        // Required empty public constructor
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mScheduleViewModel = ViewModelProviders.of(this).get(ScheduleViewModel.class);
+        mScheduleList = new ArrayList<ScheduleEntity>();
+        mScheduleBuilderAdapter = new ScheduleBuilderAdapter(getActivity(), mScheduleList);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_schedule, container, false);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        FloatingActionButton fab = (FloatingActionButton)getView().findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), NewSchedule.class);
+                startActivity(intent);
+            }
+        });
+        buildScheduleList();
+    }
+
+    private void buildScheduleList() {
+        mLiveScheduleList = mScheduleViewModel.liveGetSchedules();
+        mLiveScheduleList.observe(ScheduleFragment.this, new Observer<List<ScheduleEntity>>() {
+            @Override
+            public void onChanged(List<ScheduleEntity> scheduleEntities) {
+                mScheduleList.clear();
+                mScheduleList.addAll(scheduleEntities);
+                mScheduleBuilderAdapter.notifyDataSetChanged();
+                final ListView listView = getView().findViewById(R.id.lvSchedules);
+                listView.setAdapter(mScheduleBuilderAdapter);
+            }
+        });
+    }
+}
