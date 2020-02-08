@@ -13,6 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -82,6 +83,18 @@ public class NewSchedule extends BaseActivity implements View.OnClickListener {
         findViewById(R.id.btSaveSchedule).setOnClickListener(this);
         findViewById(R.id.rbAudio).setOnClickListener(this);
         findViewById(R.id.rbVideo).setOnClickListener(this);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        ((RadioGroup)findViewById(R.id.rgMediaSelector)).clearCheck();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ((RadioGroup)findViewById(R.id.rgMediaSelector)).clearCheck();
     }
 
     private boolean validateEntries() {
