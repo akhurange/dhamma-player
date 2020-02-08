@@ -208,10 +208,10 @@ public class NewSchedule extends BaseActivity implements View.OnClickListener {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Bundle bundle = new Bundle();
-                bundle.putSerializable(MediaPlayer.MEDIA_DESCRIPTION, mMediaFilesList.get(position));
                 Intent intent = new Intent(NewSchedule.this, MediaPlayer.class);
-                intent.putExtras(bundle);
+                intent.putExtra(MediaPlayer.KEY_MEDIA_TYPE, mMediaType);
+                intent.putExtra(MediaPlayer.KEY_MEDIA_PATH, mMediaFilesList.get(position).mFilePath);
+                intent.putExtra(MediaPlayer.KEY_MEDIA_TITLE, mMediaFilesList.get(position).mTitle);
                 startActivity(intent);
             }
         });
