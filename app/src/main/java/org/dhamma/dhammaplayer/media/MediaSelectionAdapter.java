@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -42,6 +43,7 @@ public class MediaSelectionAdapter extends RecyclerView.Adapter<MediaSelectionAd
     private String mMediaType;
     private Set<MediaSelection.MediaFile> mSelectedMediaSet;
     private ArrayList<MediaSelection.MediaFile> mMediaFileArrayList;
+    private MenuItem mMenuActionOk;
 
 
     public MediaSelectionAdapter(Context context, ArrayList<MediaSelection.MediaFile> mediaFileArrayList) {
@@ -92,6 +94,10 @@ public class MediaSelectionAdapter extends RecyclerView.Adapter<MediaSelectionAd
         mMediaType = mediaType;
     }
 
+    public void setActionMenu(MenuItem menu) {
+        mMenuActionOk = menu;
+    }
+
     public Set<MediaSelection.MediaFile> getSelectedMediaSet() {
         return mSelectedMediaSet;
     }
@@ -136,9 +142,15 @@ public class MediaSelectionAdapter extends RecyclerView.Adapter<MediaSelectionAd
                 if (((CheckBox)v).isChecked()) {
                     // Media file selected add to the set.
                     mSelectedMediaSet.add(mediaFile);
+                    if (1 == mSelectedMediaSet.size()) {
+                        mMenuActionOk.setVisible(true);
+                    }
                 } else {
                     // Media file de selected, remove from the set.
                     mSelectedMediaSet.remove(mediaFile);
+                    if (0 == mSelectedMediaSet.size()) {
+                        mMenuActionOk.setVisible(false);
+                    }
                 }
             }
         });

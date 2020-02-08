@@ -123,6 +123,8 @@ public class MediaSelection extends BaseActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_media_selection, menu);
+        menu.findItem(R.id.action_ok).setVisible(false);
+        mMediaAdapter.setActionMenu(menu.findItem(R.id.action_ok));
         return true;
     }
 
