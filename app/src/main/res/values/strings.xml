@@ -38,4 +38,8 @@
     <string name="channel_description">Dhamma Media Player</string>
     <string name="service_notification_text">Dhamma Media Player</string>
 
+    <!-- Media File Item  -->
+    <string name="up_arrow">Move Media File Up</string>
+    <string name="down_arrow">Move Media File Down</string>
+
 </resources>

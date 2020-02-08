@@ -196,25 +196,10 @@ public class NewSchedule extends BaseActivity implements View.OnClickListener {
     }
 
     private void buildMediaFilesListView() {
-        ArrayList<String> mediaFiles = new ArrayList<>();
-        for (MediaSelection.MediaFile mediaFile : mMediaFilesList) {
-            mediaFiles.add(mediaFile.mTitle);
-        }
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>
-                (this, android.R.layout.simple_list_item_1, mediaFiles);
+        MediaFileAdapter mediaFileAdapter = new MediaFileAdapter(NewSchedule.this, mMediaFilesList, mMediaType);
         ListView listView = findViewById(R.id.lvMediaFiles);
-        listView.setAdapter(arrayAdapter);
+        listView.setAdapter(mediaFileAdapter);
         ListUtils.setDynamicHeight(listView);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(NewSchedule.this, MediaPlayer.class);
-                intent.putExtra(MediaPlayer.KEY_MEDIA_TYPE, mMediaType);
-                intent.putExtra(MediaPlayer.KEY_MEDIA_PATH, mMediaFilesList.get(position).mFilePath);
-                intent.putExtra(MediaPlayer.KEY_MEDIA_TITLE, mMediaFilesList.get(position).mTitle);
-                startActivity(intent);
-            }
-        });
     }
 
     @Override
