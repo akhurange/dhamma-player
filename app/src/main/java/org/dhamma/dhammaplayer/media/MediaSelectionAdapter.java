@@ -1,18 +1,15 @@
 package org.dhamma.dhammaplayer.media;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
-import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -28,7 +25,6 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 
 import org.dhamma.dhammaplayer.R;
-import org.dhamma.dhammaplayer.schedule.NewSchedule;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -36,19 +32,21 @@ import java.util.HashSet;
 import java.util.Set;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
 
-public class MediaSelectionAdapter extends ArrayAdapter<MediaSelection.MediaFile> {
+public class MediaSelectionAdapter extends RecyclerView.Adapter<MediaSelectionAdapter.MediaViewHolder> {
     private Context mContext;
     private SimpleExoPlayer mSimpleExoPlayer;
     private boolean mIsPlaying;
     private ImageButton mImageButton;
     private String mMediaType;
     private Set<MediaSelection.MediaFile> mSelectedMediaSet;
+    private ArrayList<MediaSelection.MediaFile> mMediaFileArrayList;
 
-    public MediaSelectionAdapter(Activity context, ArrayList<MediaSelection.MediaFile> mediaFilesList) {
-        super(context, 0, mediaFilesList);
+
+    public MediaSelectionAdapter(Context context, ArrayList<MediaSelection.MediaFile> mediaFileArrayList) {
         mContext = context;
+        mMediaFileArrayList = mediaFileArrayList;
         mIsPlaying = false;
         mSelectedMediaSet = new HashSet<>();
     }
@@ -94,27 +92,67 @@ public class MediaSelectionAdapter extends ArrayAdapter<MediaSelection.MediaFile
         mMediaType = mediaType;
     }
 
-    @NonNull
-    @Override
-    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        View listItemView = convertView;
-        if (null == listItemView) {
-            listItemView = LayoutInflater.from(getContext()).inflate(R.layout.media_item_audio, parent, false);
-        }
-        if (mMediaType.equals(MediaPlayer.MEDIA_TYPE_AUDIO)) {
-            return buildAudioItem(listItemView, position);
-        } else {
-            return buildVideoItem(listItemView, position);
+    public Set<MediaSelection.MediaFile> getSelectedMediaSet() {
+        return mSelectedMediaSet;
+    }
+
+    public class MediaViewHolder extends RecyclerView.ViewHolder {
+        public CheckBox mCheckBox;
+        public ImageView mImageView;
+        public ImageButton mPlayPauseButton;
+
+        public MediaViewHolder(@NonNull View itemView) {
+            super(itemView);
+            mCheckBox = (CheckBox)itemView.findViewById(R.id.cbMediaFile);
+            if (mMediaType.equals(MediaPlayer.MEDIA_TYPE_VIDEO)) {
+                mImageView = (ImageView) itemView.findViewById(R.id.ivVideoPreview);
+            } else {
+                mPlayPauseButton = (ImageButton)itemView.findViewById(R.id.btPlayPause);
+            }
         }
     }
 
-    private View buildAudioItem(View listItemView, int position) {
-        CheckBox cbMediaFile = listItemView.findViewById(R.id.cbMediaFile);
-        ImageButton btPlayPause = listItemView.findViewById(R.id.btPlayPause);
+    @NonNull
+    @Override
+    public MediaSelectionAdapter.MediaViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View itemView;
+        if (mMediaType.equals(MediaPlayer.MEDIA_TYPE_AUDIO)) {
+            itemView = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.media_item_audio, parent, false);
+        } else {
+            itemView = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.media_item_video, parent, false);
+        }
+        return new MediaViewHolder(itemView);
+    }
 
-        final MediaSelection.MediaFile currentMediaFile = getItem(position);
-        cbMediaFile.setText(currentMediaFile.mTitle);
+    @Override
+    public void onBindViewHolder(@NonNull MediaSelectionAdapter.MediaViewHolder holder, int position) {
+        final MediaSelection.MediaFile mediaFile = mMediaFileArrayList.get(position);
+        holder.mCheckBox.setText(mediaFile.mTitle);
+        holder.mCheckBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (((CheckBox)v).isChecked()) {
+                    // Media file selected add to the set.
+                    mSelectedMediaSet.add(mediaFile);
+                } else {
+                    // Media file de selected, remove from the set.
+                    mSelectedMediaSet.remove(mediaFile);
+                }
+            }
+        });
+        if (mMediaType.equals(MediaPlayer.MEDIA_TYPE_AUDIO)) {
+            buildAudioPreview(mediaFile, holder.mPlayPauseButton);
+        } else {
+            Bitmap thumbnail = ThumbnailUtils.createVideoThumbnail(mediaFile.mFilePath,
+                    MediaStore.Images.Thumbnails.MINI_KIND);
+            holder.mImageView.setImageBitmap(thumbnail);
+            buildVideoPreview(mediaFile, holder.mImageView);
+        }
+    }
 
+    private void buildAudioPreview(final MediaSelection.MediaFile mediaFile, ImageButton btPlayPause ) {
         btPlayPause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -126,7 +164,7 @@ public class MediaSelectionAdapter extends ArrayAdapter<MediaSelection.MediaFile
                     DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(mContext,
                             Util.getUserAgent(mContext, mContext.getString(R.string.app_name)));
                     MediaSource mediaSource = new ProgressiveMediaSource.Factory(dataSourceFactory)
-                            .createMediaSource(Uri.fromFile(new File(currentMediaFile.mFilePath)));
+                            .createMediaSource(Uri.fromFile(new File(mediaFile.mFilePath)));
                     if (mIsPlaying) {
                         // If some other song was already playing, stop it.
                         mSimpleExoPlayer.setPlayWhenReady(false);
@@ -141,89 +179,30 @@ public class MediaSelectionAdapter extends ArrayAdapter<MediaSelection.MediaFile
                     mIsPlaying = false;
                     mImageButton = null;
                     ib.setImageResource(android.R.drawable.ic_media_play);
+
                     ib.setTag(mContext.getString(R.string.media_play));
                 }
                 mSimpleExoPlayer.setPlayWhenReady(mIsPlaying);
             }
         });
-
-        cbMediaFile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (((CheckBox)v).isChecked()) {
-                    // Media file selected add to the set.
-                    mSelectedMediaSet.add(currentMediaFile);
-                } else {
-                    // Media file de selected, remove from the set.
-                    mSelectedMediaSet.remove(currentMediaFile);
-                }
-            }
-        });
-        return listItemView;
     }
 
-/*
-    private View buildVideoItem(View listItemView, int position) {
-        CheckBox cbMediaFile = listItemView.findViewById(R.id.cbMediaFile);
-        ImageView ivVideoPreview = listItemView.findViewById(R.id.ivVideoPreview);
-
-        final MediaSelection.MediaFile currentMediaFile = getItem(position);
-
-        Bitmap thumbnail = ThumbnailUtils.createVideoThumbnail(currentMediaFile.mFilePath,
-                MediaStore.Images.Thumbnails.MINI_KIND);
-        ivVideoPreview.setImageBitmap(thumbnail);
-
-        cbMediaFile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (((CheckBox)v).isChecked()) {
-                    // Media file selected add to the set.
-                    mSelectedMediaSet.add(currentMediaFile);
-                } else {
-                    // Media file de selected, remove from the set.
-                    mSelectedMediaSet.remove(currentMediaFile);
-                }
-            }
-        });
-        return listItemView;
-    }
-*/
-    public Set<MediaSelection.MediaFile> getSelectedMediaSet() {
-        return mSelectedMediaSet;
-    }
-
-
-    private View buildVideoItem(View listItemView, int position) {
-        CheckBox cbMediaFile = listItemView.findViewById(R.id.cbMediaFile);
-        ImageButton btPlayPause = listItemView.findViewById(R.id.btPlayPause);
-
-        final MediaSelection.MediaFile currentMediaFile = getItem(position);
-        cbMediaFile.setText(currentMediaFile.mTitle);
-
-        btPlayPause.setOnClickListener(new View.OnClickListener() {
+    private void buildVideoPreview(final MediaSelection.MediaFile mediaFile, ImageView playPreview ) {
+        playPreview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Play the video player onclick.
                 Intent intent = new Intent(mContext, MediaPlayer.class);
                 intent.putExtra(MediaPlayer.KEY_MEDIA_TYPE, mMediaType);
-                intent.putExtra(MediaPlayer.KEY_MEDIA_PATH, currentMediaFile.mFilePath);
-                intent.putExtra(MediaPlayer.KEY_MEDIA_TITLE, currentMediaFile.mTitle);
+                intent.putExtra(MediaPlayer.KEY_MEDIA_PATH, mediaFile.mFilePath);
+                intent.putExtra(MediaPlayer.KEY_MEDIA_TITLE, mediaFile.mTitle);
                 mContext.startActivity(intent);
             }
         });
+    }
 
-        cbMediaFile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (((CheckBox)v).isChecked()) {
-                    // Media file selected add to the set.
-                    mSelectedMediaSet.add(currentMediaFile);
-                } else {
-                    // Media file de selected, remove from the set.
-                    mSelectedMediaSet.remove(currentMediaFile);
-                }
-            }
-        });
-        return listItemView;
+    @Override
+    public int getItemCount() {
+        return mMediaFileArrayList.size();
     }
 }

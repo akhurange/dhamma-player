@@ -3,13 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:layout_marginTop="8dp"
     app:layout_goneMarginBottom="8dp">
 
     <ImageView
         android:layout_width="100dp"
         android:layout_height="100dp"
+        android:scaleType="matrix"
+        android:padding="8dp"
         android:id="@+id/ivVideoPreview"/>
 
     <CheckBox

@@ -2,6 +2,10 @@ package org.dhamma.dhammaplayer.media;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
 import android.content.ContentResolver;
@@ -70,6 +74,15 @@ public class MediaSelection extends BaseActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mListElementsArrayList = new ArrayList<>();
         mMediaAdapter = new MediaSelectionAdapter(MediaSelection.this, mListElementsArrayList);
+        RecyclerView rvMediaFiles = (RecyclerView)findViewById(R.id.rvMediaFiles);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        rvMediaFiles.setLayoutManager(layoutManager);
+        rvMediaFiles.setHasFixedSize(true);
+        rvMediaFiles.setItemAnimator(new DefaultItemAnimator());
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(rvMediaFiles.getContext(),
+                DividerItemDecoration.VERTICAL);
+        rvMediaFiles.addItemDecoration(dividerItemDecoration);
+        rvMediaFiles.setAdapter(mMediaAdapter);
         buildMediaList(mediaType);
     }
 
@@ -212,8 +225,6 @@ public class MediaSelection extends BaseActivity {
             } while (cursor.moveToNext());
             cursor.close();
         }
-        ListView listView = (ListView)findViewById(R.id.lvMediaFilesAudio);
-        listView.setAdapter(mMediaAdapter);
     }
 
     private void browseVideoMediaFiles() {
@@ -255,7 +266,6 @@ public class MediaSelection extends BaseActivity {
 /*        GridView gridView = (GridView) findViewById(R.id.gvMediaFilesVideo);
         gridView.setColumnWidth(GridView.AUTO_FIT);
         gridView.setAdapter(mMediaAdapter); */
-        ListView listView = (ListView)findViewById(R.id.lvMediaFilesAudio);
-        listView.setAdapter(mMediaAdapter);
+        mMediaAdapter.notifyDataSetChanged();
     }
 }
