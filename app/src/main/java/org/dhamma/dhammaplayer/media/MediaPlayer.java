@@ -20,11 +20,12 @@ import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 
+import org.dhamma.dhammaplayer.BaseActivity;
 import org.dhamma.dhammaplayer.R;
 
 import java.io.File;
 
-public class MediaPlayer extends AppCompatActivity {
+public class MediaPlayer extends BaseActivity {
 
     public static String MEDIA_DESCRIPTION = "media_description";
     private PlayerView mPlayerView;

@@ -14,8 +14,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
 
-import androidx.core.util.Pair;
-
 public class MediaGroup {
     private long mScheduleId;
     private String mTimeStamp;

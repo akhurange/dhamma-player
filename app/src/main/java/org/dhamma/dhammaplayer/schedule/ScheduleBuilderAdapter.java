@@ -9,8 +9,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.google.android.material.snackbar.Snackbar;
-
 import org.dhamma.dhammaplayer.DataRepository;
 import org.dhamma.dhammaplayer.R;
 import org.dhamma.dhammaplayer.database.ScheduleEntity;
