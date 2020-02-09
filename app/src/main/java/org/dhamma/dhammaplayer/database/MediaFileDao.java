@@ -15,7 +15,7 @@ public interface MediaFileDao {
     @Query("SELECT * FROM media_files")
     public LiveData<List<MediaFileEntity>> liveLoadMediaFiles();
 
-    @Query("SELECT * FROM media_files WHERE schedule_id = :scheduleId")
+    @Query("SELECT * FROM media_files WHERE schedule_id = :scheduleId  ORDER BY schedule_index ASC")
     public List<MediaFileEntity> loadMediaFilesForSchedule(long scheduleId);
 
     @Query("DELETE FROM media_files WHERE schedule_id = :scheduleId")

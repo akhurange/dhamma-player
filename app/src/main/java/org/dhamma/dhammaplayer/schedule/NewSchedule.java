@@ -145,13 +145,13 @@ public class NewSchedule extends BaseActivity implements View.OnClickListener {
         }
 
         ScheduleEntity scheduleEntity = new ScheduleEntity(etLabel.getText().toString(),
-                mTd.getHour(), mTd.getMinute(), days, mMediaType);
+                mTd.getHour(), mTd.getMinute(), days, mMediaType, mMediaFilesList.size());
         mDataRepository.insertSchedule(scheduleEntity, new DataRepository.GetPrimaryKeyDatabaseWriteComplete() {
             @Override
             public void onComplete(long key) {
                 MediaFileEntity[] mediaFileEntities = new MediaFileEntity[mMediaFilesList.size()];
                 for (int i=0; i<mMediaFilesList.size(); i++) {
-                    mediaFileEntities[i] = new MediaFileEntity(key, mMediaFilesList.get(i).mFilePath, mMediaFilesList.get(i).mTitle);
+                    mediaFileEntities[i] = new MediaFileEntity(key, mMediaFilesList.get(i).mFilePath, mMediaFilesList.get(i).mTitle, i);
                 }
                 mDataRepository.insertMediaFile(mediaFileEntities, new DataRepository.OnDatabaseWriteComplete() {
                     @Override

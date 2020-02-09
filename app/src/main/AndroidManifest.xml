@@ -44,6 +44,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".schedule.NewSchedule"
+            android:label="@string/new_schedule_activity_label"
             android:configChanges="orientation|screenSize|keyboardHidden" />
         <activity
             android:name=".MainActivity"

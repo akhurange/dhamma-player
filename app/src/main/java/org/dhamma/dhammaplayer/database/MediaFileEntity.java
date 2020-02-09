@@ -5,7 +5,7 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "media_files")
-public class MediaFileEntity {
+public class MediaFileEntity implements Comparable{
     @PrimaryKey(autoGenerate = true)
     private long mKey;
 
@@ -21,10 +21,15 @@ public class MediaFileEntity {
     @ColumnInfo(name = "media_title")
     private String mMediaTitle;
 
-    public MediaFileEntity(long scheduleId, String mediaPath, String mediaTitle) {
+    // Index of this media in the schedule.
+    @ColumnInfo(name = "schedule_index")
+    private int mScheduleIndex;
+
+    public MediaFileEntity(long scheduleId, String mediaPath, String mediaTitle, int scheduleIndex) {
         mScheduleId = scheduleId;
         mMediaPath = mediaPath;
         mMediaTitle = mediaTitle;
+        mScheduleIndex = scheduleIndex;
     }
 
     public long getKey() {
@@ -43,6 +48,10 @@ public class MediaFileEntity {
         return mMediaTitle;
     }
 
+    public int getScheduleIndex() {
+        return mScheduleIndex;
+    }
+
     public void setScheduleId(long scheduleId) {
         mScheduleId = scheduleId;
     }
@@ -57,5 +66,14 @@ public class MediaFileEntity {
 
     public void setMediaTitle(String mediaTitle) {
         mMediaTitle = mediaTitle;
+    }
+
+    public void setScheduleIndex(int scheduleIndex) {
+        mScheduleIndex = scheduleIndex;
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        return this.mScheduleIndex - ((MediaFileEntity)o).getScheduleIndex();
     }
 }

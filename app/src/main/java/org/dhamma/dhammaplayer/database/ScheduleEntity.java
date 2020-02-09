@@ -34,13 +34,23 @@ public class ScheduleEntity {
     @ColumnInfo(name = "active")
     private boolean mActiveStatus;
 
-    public ScheduleEntity(String label, int hour, int minute, int days, String mediaType) {
+    // Total media files count for this schedule.
+    @ColumnInfo(name = "media_count")
+    private int mMediaCount;
+
+    // Last played media file index for this schedule.
+    @ColumnInfo(name = "last_played")
+    private int mLastPlayed;
+
+    public ScheduleEntity(String label, int hour, int minute, int days, String mediaType, int mediaCount) {
         mLabel = label;
         mHour = hour;
         mMinute = minute;
         mDays = days;
         mActiveStatus = true;
         mMediaType = mediaType;
+        mMediaCount = mediaCount;
+        mLastPlayed = -1;
     }
 
     public long getKey() {
@@ -71,6 +81,14 @@ public class ScheduleEntity {
         return mActiveStatus;
     }
 
+    public int getMediaCount() {
+        return mMediaCount;
+
+    }
+    public int getLastPlayed() {
+        return mLastPlayed;
+    }
+
     public void setKey(long key) {
         mKey = key;
     }
@@ -97,5 +115,13 @@ public class ScheduleEntity {
 
     public void setActiveStatus(boolean activeStatus) {
         mActiveStatus = activeStatus;
+    }
+
+    public void setMediaCount(int mediaCount) {
+        mMediaCount = mediaCount;
+    }
+
+    public void setLastPlayed(int lastPlayed) {
+        mLastPlayed = lastPlayed;
     }
 }

@@ -74,8 +74,8 @@ public class MediaExpandableListAdapter extends BaseExpandableListAdapter {
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
         final MediaGroup mediaGroup = mMediaGroupArrayList.get(groupPosition);
-        final String mediaPath = mediaGroup.getMediaList().get(childPosition).first;
-        final String mediaTitle = mediaGroup.getMediaList().get(childPosition).second;
+        final String mediaPath = mediaGroup.getMediaList().get(childPosition).getMediaPath();
+        final String mediaTitle = mediaGroup.getMediaList().get(childPosition).getMediaTitle();
         if (null == convertView) {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.media_child_item, parent, false);
         }
