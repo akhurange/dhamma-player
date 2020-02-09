@@ -26,8 +26,12 @@ import org.dhamma.dhammaplayer.database.ScheduleEntity;
 import org.dhamma.dhammaplayer.media.MediaPlayer;
 import org.dhamma.dhammaplayer.media.MediaSelection;
 
+import java.text.DateFormat;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 public class NewSchedule extends BaseActivity implements View.OnClickListener {
 
@@ -45,15 +49,8 @@ public class NewSchedule extends BaseActivity implements View.OnClickListener {
                 public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
                     mHour = selectedHour;
                     mMinute = selectedMinute;
-                    String AM_PM;
-                    if (selectedHour < 12) {
-                        AM_PM = "AM";
-                    } else {
-                        AM_PM = "PM";
-                        selectedHour -= 12;
-                    }
-                    String displayText = selectedHour + ":" + String.format("%02d", selectedMinute) + " " + AM_PM;
-                    mEtView.setText(displayText);
+                    Date date = new GregorianCalendar(Calendar.YEAR, Calendar.MONTH, Calendar.DAY_OF_MONTH, mHour, mMinute).getTime();
+                    mEtView.setText(DateFormat.getTimeInstance(DateFormat.SHORT).format(date));
                 }
             }, hour, minute, false);
             tpDialog.show();

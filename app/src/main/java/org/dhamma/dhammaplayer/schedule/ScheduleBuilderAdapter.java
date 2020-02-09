@@ -15,7 +15,11 @@ import org.dhamma.dhammaplayer.DataRepository;
 import org.dhamma.dhammaplayer.R;
 import org.dhamma.dhammaplayer.database.ScheduleEntity;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -50,14 +54,8 @@ public class ScheduleBuilderAdapter extends ArrayAdapter<ScheduleEntity> {
         boolean activeStatus = currentSchedule.getActiveStatus();
 
         tvLabel.setText(label);
-        String AM_PM;
-        if (hour < 12) {
-            AM_PM = "AM";
-        } else {
-            AM_PM = "PM";
-            hour -= 12;
-        }
-        final String timeStamp = hour+":"+String.format("%02d",minute)+" "+AM_PM;
+        Date date = new GregorianCalendar(Calendar.YEAR, Calendar.MONTH, Calendar.DAY_OF_MONTH, hour, minute).getTime();
+        final String timeStamp = DateFormat.getTimeInstance(DateFormat.SHORT).format(date);
         tvTime.setText(timeStamp);
         if (activeStatus) {
             swActiveSchedule.setChecked(true);

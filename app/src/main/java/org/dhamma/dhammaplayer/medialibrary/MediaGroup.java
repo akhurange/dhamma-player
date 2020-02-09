@@ -3,8 +3,12 @@ package org.dhamma.dhammaplayer.medialibrary;
 import org.dhamma.dhammaplayer.database.MediaFileEntity;
 import org.dhamma.dhammaplayer.database.ScheduleEntity;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,17 +50,8 @@ public class MediaGroup {
         mScheduleId = scheduleEntity.getKey();
         mScheduleLabel = scheduleEntity.getLabel();
         mMediaType = scheduleEntity.getMediaType();
-        String AM_PM;
-        if (hour < 12) {
-            AM_PM = "AM";
-        } else {
-            AM_PM = "PM";
-            hour -= 12;
-            if (0 == hour) {
-                hour = 12;
-            }
-        }
-        mTimeStamp = hour+":"+String.format("%02d",minute)+" "+AM_PM;
+        Date date = new GregorianCalendar(Calendar.YEAR, Calendar.MONTH, Calendar.DAY_OF_MONTH, hour, minute).getTime();
+        mTimeStamp = DateFormat.getTimeInstance(DateFormat.SHORT).format(date);
     }
 
     public String getTimeStamp() {
