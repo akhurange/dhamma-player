@@ -21,4 +21,6 @@ public interface MediaFileDao {
     @Query("DELETE FROM media_files WHERE schedule_id = :scheduleId")
     public void deleteMediaFilesForSchedule(long scheduleId);
 
+    @Query("SELECT * FROM media_files WHERE schedule_id = :scheduleId AND schedule_index = :scheduleIndex")
+    public MediaFileEntity loadMediaFileForScheduleForIndex(long scheduleId, int scheduleIndex);
 }

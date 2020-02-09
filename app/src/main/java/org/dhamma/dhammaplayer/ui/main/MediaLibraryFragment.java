@@ -7,6 +7,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.view.LayoutInflater;
@@ -45,7 +46,7 @@ public class MediaLibraryFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mScheduleViewModel = ViewModelProviders.of(this).get(ScheduleViewModel.class);
+        mScheduleViewModel = new ViewModelProvider(this).get(ScheduleViewModel.class);
         mMediaGroupList = new ArrayList<MediaGroup>();
         mMediaExpandableListAdapter = new MediaExpandableListAdapter(mMediaGroupList, getActivity());
     }
@@ -71,7 +72,7 @@ public class MediaLibraryFragment extends Fragment {
 
     private void loadMediaFileList() {
         mLiveMediaFileList = mScheduleViewModel.liveGetMediaFiles();
-        mLiveMediaFileList.observe(MediaLibraryFragment.this, new Observer<List<MediaFileEntity>>() {
+        mLiveMediaFileList.observe(getViewLifecycleOwner(), new Observer<List<MediaFileEntity>>() {
             @Override
             public void onChanged(List<MediaFileEntity> mediaFileEntities) {
                 MediaGroup.buildMediaFilesMap(mediaFileEntities);
@@ -81,7 +82,7 @@ public class MediaLibraryFragment extends Fragment {
 
     private void buildScheduleList() {
         mLiveScheduleList = mScheduleViewModel.liveGetSchedules();
-        mLiveScheduleList.observe(MediaLibraryFragment.this, new Observer<List<ScheduleEntity>>() {
+        mLiveScheduleList.observe(getViewLifecycleOwner(), new Observer<List<ScheduleEntity>>() {
             @Override
             public void onChanged(List<ScheduleEntity> scheduleEntities) {
                 mMediaGroupList.clear();

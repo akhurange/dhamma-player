@@ -18,6 +18,10 @@ public class DataRepository {
         void onComplete();
     }
 
+    public interface OnMediaFileReadComplete {
+        void onComplete(MediaFileEntity mediaFileEntity);
+    }
+
     public interface GetPrimaryKeyDatabaseWriteComplete {
         void onComplete(long key);
     }
@@ -146,7 +150,7 @@ public class DataRepository {
         }
     }
 
-    //***** Get live form summary. *****//
+    //***** Get live schedule summary. *****//
     public LiveData<List<ScheduleEntity>> getLiveSchedules() {
         return mAppDatabase.scheduleDao().liveLoadSchedules();
     }
@@ -189,7 +193,7 @@ public class DataRepository {
         }
     }
 
-    //***** Async operation for deleting schedule. *****//
+    //***** Async operation for deleting media files of a schedule. *****//
     public void deleteMediaFiles(ScheduleEntity scheduleEntity, final OnDatabaseWriteComplete callback) {
         MediaFileDao dao = mAppDatabase.mediaFileDao();
         new deleteMediaFilesLocalDbAsync(dao, scheduleEntity, new deleteMediaFilesLocalDbAsync.AsyncResponse() {
@@ -224,6 +228,45 @@ public class DataRepository {
         @Override
         protected void onPostExecute(Void aVoid) {
             mCallback.processFinish();
+        }
+    }
+
+    //***** Async operation for reading i'th media file of a schedule. *****//
+    public void getMediaFileForIndex(ScheduleEntity scheduleEntity, int index, final OnMediaFileReadComplete callback) {
+        MediaFileDao dao = mAppDatabase.mediaFileDao();
+        new readMediaFileForIndexLocalDbAsync(dao, scheduleEntity, index, new readMediaFileForIndexLocalDbAsync.AsyncResponse() {
+            @Override
+            public void processFinish(MediaFileEntity mediaFileEntity) {
+                callback.onComplete(mediaFileEntity);
+            }
+        }).execute();
+    }
+
+    private static class readMediaFileForIndexLocalDbAsync extends AsyncTask<Void, Void, MediaFileEntity> {
+        public interface AsyncResponse {
+            void processFinish(MediaFileEntity mediaFileEntity);
+        }
+
+        private MediaFileDao mDao;
+        private ScheduleEntity mScheduleEntity;
+        private int mIndex;
+        private AsyncResponse mCallback;
+
+        readMediaFileForIndexLocalDbAsync(MediaFileDao dao, ScheduleEntity scheduleEntity, int index, AsyncResponse callback) {
+            mDao = dao;
+            mScheduleEntity = scheduleEntity;
+            mIndex = index;
+            mCallback = callback;
+        }
+
+        @Override
+        protected MediaFileEntity doInBackground(Void... voids) {
+            return mDao.loadMediaFileForScheduleForIndex(mScheduleEntity.getKey(), mIndex);
+        }
+
+        @Override
+        protected void onPostExecute(MediaFileEntity mediaFileEntity) {
+            mCallback.processFinish(mediaFileEntity);
         }
     }
 

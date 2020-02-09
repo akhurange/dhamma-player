@@ -33,7 +33,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
             case 1:
                 return new MediaLibraryFragment();
             case 2:
-                return new MediaLibraryFragment();
+                return new TimeTableFragment();
         }
         return null;
     }

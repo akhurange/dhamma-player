@@ -1,7 +1,6 @@
 package org.dhamma.dhammaplayer.ui.main;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -17,81 +16,78 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-import org.dhamma.dhammaplayer.DataRepository;
+import org.dhamma.dhammaplayer.BaseActivity;
 import org.dhamma.dhammaplayer.R;
 import org.dhamma.dhammaplayer.database.ScheduleEntity;
-import org.dhamma.dhammaplayer.schedule.NewSchedule;
-import org.dhamma.dhammaplayer.schedule.ScheduleBuilderAdapter;
+import org.dhamma.dhammaplayer.medialibrary.MediaGroup;
+import org.dhamma.dhammaplayer.timetable.TimeTableAdapter;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link ScheduleFragment.OnFragmentInteractionListener} interface
+ * {@link TimeTableFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link ScheduleFragment#newInstance} factory method to
+ * Use the {@link TimeTableFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ScheduleFragment extends Fragment {
-    private ScheduleBuilderAdapter mScheduleBuilderAdapter;
+public class TimeTableFragment extends Fragment {
     private ScheduleViewModel mScheduleViewModel;
     private ArrayList<ScheduleEntity> mScheduleList;
+    private TimeTableAdapter mTimeTableAdapter;
     private LiveData<List<ScheduleEntity>> mLiveScheduleList;
 
-    public ScheduleFragment() {
+    public TimeTableFragment() {
         // Required empty public constructor
     }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mScheduleViewModel = new ViewModelProvider(this).get(ScheduleViewModel.class);;
+        mScheduleViewModel = new ViewModelProvider(this).get(ScheduleViewModel.class);
         mScheduleList = new ArrayList<ScheduleEntity>();
-        mScheduleBuilderAdapter = new ScheduleBuilderAdapter(getActivity(), mScheduleList);
+        mTimeTableAdapter = new TimeTableAdapter(getActivity(), mScheduleList);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_schedule, container, false);
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
+        return inflater.inflate(R.layout.fragment_time_table, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        FloatingActionButton fab = (FloatingActionButton)getView().findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), NewSchedule.class);
-                startActivity(intent);
-            }
-        });
-        buildScheduleList();
-    }
+        TextView tvToday = getView().findViewById(R.id.tvDate);
+        Date date = Calendar.getInstance().getTime();
+        tvToday.setText(DateFormat.getDateInstance(DateFormat.FULL).format(date));
 
-    private void buildScheduleList() {
         mLiveScheduleList = mScheduleViewModel.liveGetSchedules();
         mLiveScheduleList.observe(getViewLifecycleOwner(), new Observer<List<ScheduleEntity>>() {
             @Override
             public void onChanged(List<ScheduleEntity> scheduleEntities) {
                 mScheduleList.clear();
                 mScheduleList.addAll(scheduleEntities);
-                mScheduleBuilderAdapter.notifyDataSetChanged();
-                final ListView listView = getView().findViewById(R.id.lvSchedules);
-                listView.setAdapter(mScheduleBuilderAdapter);
+                mTimeTableAdapter.notifyDataSetChanged();
+                final ListView listView = getView().findViewById(R.id.lvEvents);
+                listView.setAdapter(mTimeTableAdapter);
+                BaseActivity.ListUtils.setDynamicHeight(listView);
             }
         });
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
     }
 }
