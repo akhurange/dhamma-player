@@ -70,7 +70,7 @@ public class TimeTableFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         TextView tvToday = getView().findViewById(R.id.tvDate);
         Date date = Calendar.getInstance().getTime();
-        tvToday.setText(DateFormat.getDateInstance(DateFormat.FULL).format(date));
+        tvToday.setText(DateFormat.getDateInstance(DateFormat.LONG).format(date));
 
         mLiveScheduleList = mScheduleViewModel.liveGetSchedules();
         mLiveScheduleList.observe(getViewLifecycleOwner(), new Observer<List<ScheduleEntity>>() {
