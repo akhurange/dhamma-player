@@ -144,8 +144,10 @@
             android:id="@+id/btSaveSchedule"
             android:text="@string/save"
             android:drawableStart="@android:drawable/ic_lock_idle_alarm"
+            android:drawableTint="@android:color/white"
             android:drawablePadding="8dp"
             android:textColor="@android:color/white"
+            android:backgroundTint="@color/colorAccent"
             android:layout_gravity="center_horizontal" />
     </LinearLayout>
 
