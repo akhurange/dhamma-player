@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -161,13 +162,10 @@ public class MediaSelectionAdapter extends RecyclerView.Adapter<MediaSelectionAd
         if (mMediaType.equals(MediaPlayer.MEDIA_TYPE_AUDIO)) {
             buildAudioPreview(mediaFile, holder.mPlayPauseButton);
         } else {
-            if (null == mediaFile.mThumbnail) {
-                mediaFile.mThumbnail = ThumbnailUtils.createVideoThumbnail(mediaFile.mFilePath,
-                        MediaStore.Images.Thumbnails.MINI_KIND);
-            }
             Glide
                     .with(mContext)
-                    .load(mediaFile.mThumbnail)
+                    .asBitmap()
+                    .load(Uri.fromFile(new File(mediaFile.mFilePath)))
                     .centerCrop()
                     .placeholder(new ColorDrawable(Color.GRAY))
                     .into(holder.mImageView);

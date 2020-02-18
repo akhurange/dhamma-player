@@ -40,7 +40,6 @@ public class MediaSelection extends BaseActivity {
     static public class MediaFile implements Serializable {
         public String mTitle;
         public String mFilePath;
-        public Bitmap mThumbnail;
         public int mDuration;
         public int mSize;
 
