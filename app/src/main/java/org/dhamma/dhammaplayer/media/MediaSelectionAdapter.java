@@ -2,13 +2,9 @@ package org.dhamma.dhammaplayer.media;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.media.ThumbnailUtils;
 import android.net.Uri;
-import android.os.AsyncTask;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -17,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.exoplayer2.ExoPlaybackException;
@@ -33,6 +30,7 @@ import org.dhamma.dhammaplayer.R;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Formatter;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -106,14 +104,18 @@ public class MediaSelectionAdapter extends RecyclerView.Adapter<MediaSelectionAd
         return mSelectedMediaSet;
     }
 
-    public class MediaViewHolder extends RecyclerView.ViewHolder {
-        public CheckBox mCheckBox;
-        public ImageView mImageView;
-        public ImageButton mPlayPauseButton;
+    class MediaViewHolder extends RecyclerView.ViewHolder {
+        CheckBox mCheckBox;
+        ImageView mImageView;
+        TextView mTvMediaTitle;
+        TextView mTvMediaDetails;
+        ImageButton mPlayPauseButton;
 
-        public MediaViewHolder(@NonNull View itemView) {
+        MediaViewHolder(@NonNull View itemView) {
             super(itemView);
             mCheckBox = (CheckBox)itemView.findViewById(R.id.cbMediaFile);
+            mTvMediaTitle = (TextView)itemView.findViewById(R.id.tvMediaTitle);
+            mTvMediaDetails = (TextView)itemView.findViewById(R.id.tvDetails);
             if (mMediaType.equals(MediaPlayer.MEDIA_TYPE_VIDEO)) {
                 mImageView = (ImageView) itemView.findViewById(R.id.ivVideoPreview);
             } else {
@@ -139,7 +141,9 @@ public class MediaSelectionAdapter extends RecyclerView.Adapter<MediaSelectionAd
     @Override
     public void onBindViewHolder(@NonNull MediaSelectionAdapter.MediaViewHolder holder, int position) {
         final MediaSelection.MediaFile mediaFile = mMediaFileArrayList.get(position);
-        holder.mCheckBox.setText(mediaFile.mTitle);
+        holder.mTvMediaTitle.setText(mediaFile.mTitle);
+        String mediaDetails = "Duration: " + mediaFile.readableDuration();
+        holder.mTvMediaDetails.setText(mediaDetails);
         holder.mCheckBox.setChecked(false);
         holder.mCheckBox.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -41,7 +41,15 @@ public class MediaSelection extends BaseActivity {
         public String mTitle;
         public String mFilePath;
         public int mDuration;
-        public int mSize;
+        public Long mSize;
+
+        private final static long ONE_SECOND = 1000;
+        private final static long SECONDS = 60;
+        private final static long ONE_MINUTE = ONE_SECOND * 60;
+        private final static long MINUTES = 60;
+        private final static long ONE_HOUR = ONE_MINUTE * 60;
+        private final static long HOURS = 24;
+        private final static long ONE_DAY = ONE_HOUR * 24;
 
         @Override
         public int hashCode() {
@@ -57,6 +65,23 @@ public class MediaSelection extends BaseActivity {
             if (getClass() != obj.getClass())
                 return false;
             return mFilePath.equals(((MediaFile)obj).mFilePath);
+        }
+
+        public String readableDuration() {
+            String res;
+            mDuration /= ONE_SECOND;
+            int seconds = (int) (mDuration % SECONDS);
+            mDuration /= SECONDS;
+            int minutes = (int) (mDuration % MINUTES);
+            mDuration /= MINUTES;
+            int hours = (int) (mDuration % HOURS);
+            int days = (int) (mDuration / HOURS);
+            if (days == 0) {
+                res = String.format("%02d:%02d:%02d", hours, minutes, seconds);
+            } else {
+                res = String.format("%day(s) - %02d:%02d:%02d", days, hours, minutes, seconds);
+            }
+            return res;
         }
     }
 
@@ -222,7 +247,7 @@ public class MediaSelection extends BaseActivity {
                 MediaFile mediaFile = new MediaFile();
                 mediaFile.mTitle = cursor.getString(nameColumn);
                 mediaFile.mDuration = cursor.getInt(durationColumn);
-                mediaFile.mSize = cursor.getInt(sizeColumn);
+                mediaFile.mSize = cursor.getLong(sizeColumn);
                 mediaFile.mFilePath = cursor.getString(dataColumn);
                 mListElementsArrayList.add(mediaFile);
             } while (cursor.moveToNext());
@@ -260,7 +285,7 @@ public class MediaSelection extends BaseActivity {
                 MediaFile mediaFile = new MediaFile();
                 mediaFile.mTitle = cursor.getString(nameColumn);
                 mediaFile.mDuration = cursor.getInt(durationColumn);
-                mediaFile.mSize = cursor.getInt(sizeColumn);
+                mediaFile.mSize = cursor.getLong(sizeColumn);
                 mediaFile.mFilePath = cursor.getString(dataColumn);
                 mListElementsArrayList.add(mediaFile);
             } while (cursor.moveToNext());

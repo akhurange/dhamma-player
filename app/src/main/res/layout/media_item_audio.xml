@@ -10,9 +10,29 @@
     <CheckBox
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="6"
+        android:layout_weight="1"
         android:checked="false"
+        android:layout_gravity="center_vertical"
         android:id="@+id/cbMediaFile"/>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="6"
+        android:orientation="vertical"
+        android:layout_gravity="center_vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:id="@+id/tvMediaTitle"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:layout_marginTop="8dp"
+            android:id="@+id/tvDetails"/>
+    </LinearLayout>
 
     <ImageButton
         android:layout_width="0dp"

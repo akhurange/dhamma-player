@@ -1,23 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="8dp"
     app:layout_goneMarginBottom="8dp">
 
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checked="false"
+        android:layout_gravity="center_vertical"
+        android:id="@+id/cbMediaFile"/>
+
     <ImageView
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:scaleType="matrix"
-        android:padding="8dp"
+        android:layout_marginStart="8dp"
+        android:padding="4dp"
         android:id="@+id/ivVideoPreview"/>
 
-    <CheckBox
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_weight="6"
-        android:checked="false"
-        android:id="@+id/cbMediaFile"/>
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_gravity="center_vertical"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:id="@+id/tvMediaTitle"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:layout_marginTop="8dp"
+            android:id="@+id/tvDetails"/>
+    </LinearLayout>
+
 </LinearLayout>
