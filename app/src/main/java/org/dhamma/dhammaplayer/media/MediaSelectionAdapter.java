@@ -3,6 +3,8 @@ package org.dhamma.dhammaplayer.media;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.provider.MediaStore;
@@ -15,6 +17,7 @@ import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.Player;
@@ -158,9 +161,17 @@ public class MediaSelectionAdapter extends RecyclerView.Adapter<MediaSelectionAd
         if (mMediaType.equals(MediaPlayer.MEDIA_TYPE_AUDIO)) {
             buildAudioPreview(mediaFile, holder.mPlayPauseButton);
         } else {
-            Bitmap thumbnail = ThumbnailUtils.createVideoThumbnail(mediaFile.mFilePath,
-                    MediaStore.Images.Thumbnails.MINI_KIND);
-            holder.mImageView.setImageBitmap(thumbnail);
+            if (null == mediaFile.mThumbnail) {
+                mediaFile.mThumbnail = ThumbnailUtils.createVideoThumbnail(mediaFile.mFilePath,
+                        MediaStore.Images.Thumbnails.MINI_KIND);
+            }
+            Glide
+                    .with(mContext)
+                    .load(mediaFile.mThumbnail)
+                    .centerCrop()
+                    .placeholder(new ColorDrawable(Color.GRAY))
+                    .into(holder.mImageView);
+
             buildVideoPreview(mediaFile, holder.mImageView);
         }
     }

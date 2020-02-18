@@ -12,6 +12,7 @@ import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -39,6 +40,7 @@ public class MediaSelection extends BaseActivity {
     static public class MediaFile implements Serializable {
         public String mTitle;
         public String mFilePath;
+        public Bitmap mThumbnail;
         public int mDuration;
         public int mSize;
 
