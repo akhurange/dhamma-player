@@ -13,9 +13,11 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ExpandableListView;
 import android.widget.ListView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -52,7 +54,7 @@ public class ScheduleFragment extends Fragment {
         super.onCreate(savedInstanceState);
         mScheduleViewModel = new ViewModelProvider(this).get(ScheduleViewModel.class);;
         mScheduleList = new ArrayList<ScheduleEntity>();
-        mScheduleBuilderAdapter = new ScheduleBuilderAdapter(getActivity(), mScheduleList);
+        mScheduleBuilderAdapter = new ScheduleBuilderAdapter(mScheduleList, getActivity());
     }
 
     @Override
@@ -89,8 +91,8 @@ public class ScheduleFragment extends Fragment {
                 mScheduleList.clear();
                 mScheduleList.addAll(scheduleEntities);
                 mScheduleBuilderAdapter.notifyDataSetChanged();
-                final ListView listView = getView().findViewById(R.id.lvSchedules);
-                listView.setAdapter(mScheduleBuilderAdapter);
+                final ExpandableListView elvSchedules = getView().findViewById(R.id.elvSchedules);
+                elvSchedules.setAdapter(mScheduleBuilderAdapter);
             }
         });
     }

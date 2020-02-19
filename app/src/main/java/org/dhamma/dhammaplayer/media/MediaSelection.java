@@ -269,7 +269,7 @@ public class MediaSelection extends BaseActivity {
         if (cursor == null) {
             Toast.makeText(MediaSelection.this,"Something Went Wrong.", Toast.LENGTH_LONG).show();
         } else if (!cursor.moveToFirst()) {
-            Toast.makeText(MediaSelection.this,"No Music Found on SD Card.", Toast.LENGTH_LONG).show();
+            Toast.makeText(MediaSelection.this,"No Video Found on SD Card.", Toast.LENGTH_LONG).show();
         }
         else {
             // Cache column indices.

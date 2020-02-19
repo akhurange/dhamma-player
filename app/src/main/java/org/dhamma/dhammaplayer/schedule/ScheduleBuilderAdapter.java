@@ -1,11 +1,11 @@
 package org.dhamma.dhammaplayer.schedule;
 
-import android.app.Activity;
+import android.content.Context;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -19,33 +19,64 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.content.ContextCompat;
 
-public class ScheduleBuilderAdapter extends ArrayAdapter<ScheduleEntity> {
-    private Activity mContext;
+public class ScheduleBuilderAdapter extends BaseExpandableListAdapter {
+    private Context mContext;
+    private ArrayList<ScheduleEntity> mScheduleEntityArrayList;
 
-    public ScheduleBuilderAdapter(Activity context, ArrayList<ScheduleEntity> scheduleEntities) {
-        super(context, 0, scheduleEntities);
+    public ScheduleBuilderAdapter(ArrayList<ScheduleEntity> scheduleEntityArrayList, Context context) {
+        mScheduleEntityArrayList = scheduleEntityArrayList;
         mContext = context;
     }
 
-    @NonNull
     @Override
-    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        View listItemView = convertView;
-        if (null == listItemView){
-            listItemView = LayoutInflater.from(getContext()).inflate(R.layout.schedule_group, parent, false);
+    public int getGroupCount() {
+        return mScheduleEntityArrayList.size();
+    }
+
+    @Override
+    public int getChildrenCount(int groupPosition) {
+        return 1;
+    }
+
+    @Override
+    public Object getGroup(int groupPosition) {
+        return mScheduleEntityArrayList.get(groupPosition);
+    }
+
+    @Override
+    public Object getChild(int groupPosition, int childPosition) {
+        return mScheduleEntityArrayList.get(groupPosition);
+    }
+
+    @Override
+    public long getGroupId(int groupPosition) {
+        return groupPosition;
+    }
+
+    @Override
+    public long getChildId(int groupPosition, int childPosition) {
+        return groupPosition*mScheduleEntityArrayList.size()+childPosition;
+    }
+
+    @Override
+    public boolean hasStableIds() {
+        return false;
+    }
+
+    @Override
+    public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
+        final ScheduleEntity currentSchedule = mScheduleEntityArrayList.get(groupPosition);
+        if (null == convertView) {
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.schedule_group, parent, false);
         }
 
-        TextView tvLabel = listItemView.findViewById(R.id.tvLabel);
-        TextView tvTime = listItemView.findViewById(R.id.tvTime);
-        SwitchCompat swActiveSchedule = listItemView.findViewById(R.id.swSchedule);
-        Button btDelete = listItemView.findViewById(R.id.btDelete);
+        TextView tvTime = convertView.findViewById(R.id.tvTime);
+        TextView tvLabel = convertView.findViewById(R.id.tvLabel);
+        SwitchCompat swActiveSchedule = convertView.findViewById(R.id.swSchedule);
 
-        final ScheduleEntity currentSchedule = getItem(position);
         String label = currentSchedule.getLabel();
         int hour = currentSchedule.getHour();
         int minute = currentSchedule.getMinute();
@@ -63,19 +94,6 @@ public class ScheduleBuilderAdapter extends ArrayAdapter<ScheduleEntity> {
             tvTime.setTextColor(Color.GRAY);
         }
 
-        btDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DataRepository dataRepository = new DataRepository(mContext);
-                dataRepository.deleteSchedule(currentSchedule, new DataRepository.OnDatabaseWriteComplete() {
-                    @Override
-                    public void onComplete() {
-                        return;
-                    }
-                });
-            }
-        });
-
         swActiveSchedule.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -91,6 +109,36 @@ public class ScheduleBuilderAdapter extends ArrayAdapter<ScheduleEntity> {
                 });
             }
         });
-        return listItemView;
+        return convertView;
+    }
+
+    @Override
+    public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
+        final ScheduleEntity currentSchedule = mScheduleEntityArrayList.get(groupPosition);
+        if (null == convertView) {
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.schedule_child, parent, false);
+        }
+
+        Button btDelete = convertView.findViewById(R.id.btDelete);
+        btDelete.setFocusable(false);
+
+        btDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DataRepository dataRepository = new DataRepository(mContext);
+                dataRepository.deleteSchedule(currentSchedule, new DataRepository.OnDatabaseWriteComplete() {
+                    @Override
+                    public void onComplete() {
+                        return;
+                    }
+                });
+            }
+        });
+        return convertView;
+    }
+
+    @Override
+    public boolean isChildSelectable(int groupPosition, int childPosition) {
+        return true;
     }
 }

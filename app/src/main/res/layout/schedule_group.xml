@@ -2,8 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_margin="8dp">
+    android:layout_height="wrap_content"
+    android:paddingStart="?android:attr/expandableListPreferredItemPaddingLeft"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp">
 
     <LinearLayout
         android:layout_width="0dp"
@@ -20,19 +22,15 @@
             android:layout_height="wrap_content"
             android:textSize="24sp"
             android:id="@+id/tvLabel"/>
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/delete_button_text"
-            android:drawableStart="@android:drawable/ic_menu_delete"
-            android:id="@+id/btDelete" />
     </LinearLayout>
 
     <androidx.appcompat.widget.SwitchCompat
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:layout_weight="2"
         android:layout_gravity="center"
-        android:id="@+id/swSchedule" />
+        android:id="@+id/swSchedule"
+        android:layout_margin="4dp"
+        android:focusable="false"/>
 
 </LinearLayout>

@@ -11,6 +11,7 @@
         android:id="@+id/elMediaList"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
+        android:clipToPadding="false"
         android:indicatorLeft="?android:attr/expandableListPreferredChildIndicatorLeft" />
 
 </FrameLayout>
