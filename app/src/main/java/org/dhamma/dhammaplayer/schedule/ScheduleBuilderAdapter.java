@@ -1,5 +1,6 @@
 package org.dhamma.dhammaplayer.schedule;
 
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.view.LayoutInflater;
@@ -8,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import org.dhamma.dhammaplayer.DataRepository;
 import org.dhamma.dhammaplayer.R;
@@ -73,13 +75,13 @@ public class ScheduleBuilderAdapter extends BaseExpandableListAdapter {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.schedule_group, parent, false);
         }
 
-        TextView tvTime = convertView.findViewById(R.id.tvTime);
+        final TextView tvTime = convertView.findViewById(R.id.tvTime);
         TextView tvLabel = convertView.findViewById(R.id.tvLabel);
         SwitchCompat swActiveSchedule = convertView.findViewById(R.id.swSchedule);
 
         String label = currentSchedule.getLabel();
-        int hour = currentSchedule.getHour();
-        int minute = currentSchedule.getMinute();
+        final int hour = currentSchedule.getHour();
+        final int minute = currentSchedule.getMinute();
         boolean activeStatus = currentSchedule.getActiveStatus();
 
         tvLabel.setText(label);
@@ -93,6 +95,33 @@ public class ScheduleBuilderAdapter extends BaseExpandableListAdapter {
             swActiveSchedule.setChecked(false);
             tvTime.setTextColor(Color.GRAY);
         }
+
+        // Allow change of time for schedule.
+        tvTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TimePickerDialog tpDialog = new TimePickerDialog(mContext, new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                        Date date = new GregorianCalendar(Calendar.YEAR, Calendar.MONTH, Calendar.DAY_OF_MONTH,
+                                selectedHour, selectedMinute).getTime();
+                        tvTime.setText(DateFormat.getTimeInstance(DateFormat.SHORT).format(date));
+                        // Save new changes to local db.
+                        DataRepository dataRepository = new DataRepository(mContext);
+                        ScheduleEntity scheduleEntity = new ScheduleEntity(currentSchedule.getLabel(), selectedHour, selectedMinute,
+                                currentSchedule.getDays(), currentSchedule.getMediaType(), currentSchedule.getMediaCount());
+                        scheduleEntity.setKey(currentSchedule.getKey());
+                        dataRepository.updateSchedule(scheduleEntity, new DataRepository.OnDatabaseWriteComplete() {
+                            @Override
+                            public void onComplete() {
+                                return;
+                            }
+                        });
+                    }
+                }, hour, minute, false);
+                tpDialog.show();
+            }
+        });
 
         swActiveSchedule.setOnClickListener(new View.OnClickListener() {
             @Override
