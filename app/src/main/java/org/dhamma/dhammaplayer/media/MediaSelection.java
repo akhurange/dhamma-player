@@ -40,8 +40,9 @@ public class MediaSelection extends BaseActivity {
     static public class MediaFile implements Serializable {
         public String mTitle;
         public String mFilePath;
-        public int mDuration;
-        public Long mSize;
+        int mDuration;
+        Long mSize;
+        public String mReadableDuration;
 
         private final static long ONE_SECOND = 1000;
         private final static long SECONDS = 60;
@@ -67,8 +68,7 @@ public class MediaSelection extends BaseActivity {
             return mFilePath.equals(((MediaFile)obj).mFilePath);
         }
 
-        public String readableDuration() {
-            String res;
+        public void setReadableDuration() {
             mDuration /= ONE_SECOND;
             int seconds = (int) (mDuration % SECONDS);
             mDuration /= SECONDS;
@@ -77,11 +77,10 @@ public class MediaSelection extends BaseActivity {
             int hours = (int) (mDuration % HOURS);
             int days = (int) (mDuration / HOURS);
             if (days == 0) {
-                res = String.format("%02d:%02d:%02d", hours, minutes, seconds);
+                mReadableDuration = String.format("%02d:%02d:%02d", hours, minutes, seconds);
             } else {
-                res = String.format("%day(s) - %02d:%02d:%02d", days, hours, minutes, seconds);
+                mReadableDuration = String.format("%day(s) - %02d:%02d:%02d", days, hours, minutes, seconds);
             }
-            return res;
         }
     }
 
@@ -204,12 +203,8 @@ public class MediaSelection extends BaseActivity {
                         } else {
                             mMediaAdapter.setMediaType(mediaType);
                             if (mediaType.equals(MediaPlayer.MEDIA_TYPE_AUDIO)) {
-//                                findViewById(R.id.lvMediaFilesAudio).setVisibility(View.VISIBLE);
-//                                findViewById(R.id.gvMediaFilesVideo).setVisibility(View.GONE);
                                 browseAudioMediaFiles();
                             } else {
-//                                findViewById(R.id.lvMediaFilesAudio).setVisibility(View.GONE);
-//                                findViewById(R.id.gvMediaFilesVideo).setVisibility(View.VISIBLE);
                                 browseVideoMediaFiles();
                             }
                         }
@@ -249,6 +244,7 @@ public class MediaSelection extends BaseActivity {
                 mediaFile.mDuration = cursor.getInt(durationColumn);
                 mediaFile.mSize = cursor.getLong(sizeColumn);
                 mediaFile.mFilePath = cursor.getString(dataColumn);
+                mediaFile.setReadableDuration();
                 mListElementsArrayList.add(mediaFile);
             } while (cursor.moveToNext());
             cursor.close();
@@ -287,13 +283,11 @@ public class MediaSelection extends BaseActivity {
                 mediaFile.mDuration = cursor.getInt(durationColumn);
                 mediaFile.mSize = cursor.getLong(sizeColumn);
                 mediaFile.mFilePath = cursor.getString(dataColumn);
+                mediaFile.setReadableDuration();
                 mListElementsArrayList.add(mediaFile);
             } while (cursor.moveToNext());
             cursor.close();
         }
-/*        GridView gridView = (GridView) findViewById(R.id.gvMediaFilesVideo);
-        gridView.setColumnWidth(GridView.AUTO_FIT);
-        gridView.setAdapter(mMediaAdapter); */
         mMediaAdapter.notifyDataSetChanged();
     }
 }

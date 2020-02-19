@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="8dp"
-    app:layout_goneMarginBottom="8dp">
+    android:layout_marginBottom="8dp">
 
     <CheckBox
         android:layout_width="wrap_content"
@@ -17,9 +17,7 @@
     <ImageView
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:scaleType="matrix"
         android:layout_marginStart="8dp"
-        android:padding="4dp"
         android:id="@+id/ivVideoPreview"/>
 
     <LinearLayout

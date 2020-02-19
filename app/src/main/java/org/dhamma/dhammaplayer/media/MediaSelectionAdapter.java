@@ -142,7 +142,7 @@ public class MediaSelectionAdapter extends RecyclerView.Adapter<MediaSelectionAd
     public void onBindViewHolder(@NonNull MediaSelectionAdapter.MediaViewHolder holder, int position) {
         final MediaSelection.MediaFile mediaFile = mMediaFileArrayList.get(position);
         holder.mTvMediaTitle.setText(mediaFile.mTitle);
-        String mediaDetails = "Duration: " + mediaFile.readableDuration();
+        String mediaDetails = "Duration: " + mediaFile.mReadableDuration;
         holder.mTvMediaDetails.setText(mediaDetails);
         holder.mCheckBox.setChecked(false);
         holder.mCheckBox.setOnClickListener(new View.OnClickListener() {
