@@ -49,9 +49,21 @@ public class TimeTableAdapter extends ArrayAdapter<ScheduleEntity> {
         tvScheduleLabel.setText(currentSchedule.getLabel());
         Date date = new GregorianCalendar(Calendar.YEAR, Calendar.MONTH, Calendar.DAY_OF_MONTH,
                 currentSchedule.getHour(), currentSchedule.getMinute()).getTime();
+        String today = DateFormat.getDateInstance(DateFormat.SHORT).format(date);
         tvTimeStamp.setText(DateFormat.getTimeInstance(DateFormat.SHORT).format(date));
+
         DataRepository dataRepository = new DataRepository(mContext);
-        dataRepository.getMediaFileForIndex(currentSchedule, currentSchedule.getLastPlayed() + 1, new DataRepository.OnMediaFileReadComplete() {
+        if (!today.equals(currentSchedule.getLastDate())) {
+            currentSchedule.setLastPlayed((currentSchedule.getLastPlayed()+1) % currentSchedule.getMediaCount());
+            currentSchedule.setLastDate(today);
+            dataRepository.updateSchedule(currentSchedule, new DataRepository.OnDatabaseWriteComplete() {
+                @Override
+                public void onComplete() {
+                    return;
+                }
+            });
+        }
+        dataRepository.getMediaFileForIndex(currentSchedule, currentSchedule.getLastPlayed(), new DataRepository.OnMediaFileReadComplete() {
             @Override
             public void onComplete(final MediaFileEntity mediaFileEntity) {
                 tvMediaTitle.setText(mediaFileEntity.getMediaTitle());

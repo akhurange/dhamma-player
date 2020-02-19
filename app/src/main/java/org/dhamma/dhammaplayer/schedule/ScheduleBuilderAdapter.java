@@ -112,7 +112,8 @@ public class ScheduleBuilderAdapter extends BaseExpandableListAdapter {
                         // Save new changes to local db.
                         DataRepository dataRepository = new DataRepository(mContext);
                         ScheduleEntity scheduleEntity = new ScheduleEntity(currentSchedule.getLabel(), selectedHour, selectedMinute,
-                                currentSchedule.getDays(), currentSchedule.getMediaType(), currentSchedule.getMediaCount());
+                                currentSchedule.getDays(), currentSchedule.getMediaType(),
+                                currentSchedule.getMediaCount(), currentSchedule.getLastDate());
                         scheduleEntity.setKey(currentSchedule.getKey());
                         dataRepository.updateSchedule(scheduleEntity, new DataRepository.OnDatabaseWriteComplete() {
                             @Override

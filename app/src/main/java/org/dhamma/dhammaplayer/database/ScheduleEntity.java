@@ -42,7 +42,11 @@ public class ScheduleEntity {
     @ColumnInfo(name = "last_played")
     private int mLastPlayed;
 
-    public ScheduleEntity(String label, int hour, int minute, int days, String mediaType, int mediaCount) {
+    // Last played date for this schedule.
+    @ColumnInfo(name = "last_date")
+    private String mLastDate;
+
+    public ScheduleEntity(String label, int hour, int minute, int days, String mediaType, int mediaCount, String lastDate) {
         mLabel = label;
         mHour = hour;
         mMinute = minute;
@@ -50,7 +54,8 @@ public class ScheduleEntity {
         mActiveStatus = true;
         mMediaType = mediaType;
         mMediaCount = mediaCount;
-        mLastPlayed = -1;
+        mLastPlayed = 0;
+        mLastDate = lastDate;
     }
 
     public long getKey() {
@@ -83,10 +88,14 @@ public class ScheduleEntity {
 
     public int getMediaCount() {
         return mMediaCount;
-
     }
+
     public int getLastPlayed() {
         return mLastPlayed;
+    }
+
+    public String getLastDate() {
+        return mLastDate;
     }
 
     public void setKey(long key) {
@@ -123,5 +132,9 @@ public class ScheduleEntity {
 
     public void setLastPlayed(int lastPlayed) {
         mLastPlayed = lastPlayed;
+    }
+
+    public void setLastDate(String lastDate) {
+        mLastDate = lastDate;
     }
 }

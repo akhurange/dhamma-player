@@ -138,8 +138,10 @@ public class NewSchedule extends BaseActivity implements View.OnClickListener {
             }
         }
 
+        Date date = new GregorianCalendar(Calendar.YEAR, Calendar.MONTH, Calendar.DAY_OF_MONTH).getTime();
+        String today = DateFormat.getDateInstance(DateFormat.SHORT).format(date);
         ScheduleEntity scheduleEntity = new ScheduleEntity(etLabel.getText().toString(),
-                mTd.getHour(), mTd.getMinute(), days, mMediaType, mMediaFilesList.size());
+                mTd.getHour(), mTd.getMinute(), days, mMediaType, mMediaFilesList.size(), today);
         mDataRepository.insertSchedule(scheduleEntity, new DataRepository.GetPrimaryKeyDatabaseWriteComplete() {
             @Override
             public void onComplete(long key) {
