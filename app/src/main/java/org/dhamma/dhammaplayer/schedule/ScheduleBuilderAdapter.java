@@ -1,5 +1,6 @@
 package org.dhamma.dhammaplayer.schedule;
 
+import android.app.Activity;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.graphics.Color;
@@ -10,6 +11,8 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.TimePicker;
+
+import com.google.android.material.snackbar.Snackbar;
 
 import org.dhamma.dhammaplayer.DataRepository;
 import org.dhamma.dhammaplayer.R;
@@ -128,6 +131,8 @@ public class ScheduleBuilderAdapter extends BaseExpandableListAdapter {
             public void onClick(View v) {
                 String warning = "Alarm for " + currentSchedule.getLabel() + " at " + timeStamp + " turned ";
                 warning += (((SwitchCompat)v).isChecked() ? "on" : "off");
+                Snackbar snackbar = Snackbar.make(((Activity)mContext).findViewById(R.id.coordinatorLayout), warning, Snackbar.LENGTH_SHORT);
+                snackbar.show();
                 currentSchedule.setActiveStatus(((SwitchCompat)v).isChecked());
                 DataRepository dataRepository = new DataRepository(mContext);
                 dataRepository.updateSchedule(currentSchedule, new DataRepository.OnDatabaseWriteComplete() {
