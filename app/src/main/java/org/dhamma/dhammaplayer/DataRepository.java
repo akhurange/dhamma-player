@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import org.dhamma.dhammaplayer.database.AppDatabase;
 import org.dhamma.dhammaplayer.database.MediaFileDao;
 import org.dhamma.dhammaplayer.database.MediaFileEntity;
+import org.dhamma.dhammaplayer.database.PersistentMap;
 import org.dhamma.dhammaplayer.database.ScheduleDao;
 import org.dhamma.dhammaplayer.database.ScheduleEntity;
 
@@ -27,9 +28,11 @@ public class DataRepository {
     }
 
     private AppDatabase mAppDatabase;
+    private Context mContext;
 
     public DataRepository(Context context) {
         mAppDatabase = AppDatabase.getInstance(context);
+        mContext = context;
     }
 
     //***** Async operation for inserting schedule. *****//
@@ -273,5 +276,20 @@ public class DataRepository {
     //***** Get live form summary. *****//
     public LiveData<List<MediaFileEntity>> getLiveMediaFiles() {
         return mAppDatabase.mediaFileDao().liveLoadMediaFiles();
+    }
+
+    //***** Get the last played date for a schedule. *****//
+    public String getLastExecutionDateForSchedule(Long scheduleKey) {
+        return PersistentMap.getInstance(mContext).getString(scheduleKey.toString());
+    }
+
+    //***** Set the last played date for a schedule. *****//
+    public void setLastExecutionDateForSchedule(Long scheduleKey, String date) {
+        PersistentMap.getInstance(mContext).putString(scheduleKey.toString(), date);
+    }
+
+    //***** Drop the last played date for a schedule. *****//
+    public void dropLastExecutionDateForSchedule(Long scheduleKey) {
+        PersistentMap.getInstance(mContext).removeKey(scheduleKey.toString());
     }
 }
