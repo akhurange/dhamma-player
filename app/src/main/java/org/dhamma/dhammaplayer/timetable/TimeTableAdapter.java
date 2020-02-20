@@ -47,7 +47,9 @@ public class TimeTableAdapter extends ArrayAdapter<ScheduleEntity> {
 
         final ScheduleEntity currentSchedule = getItem(position);
         tvScheduleLabel.setText(currentSchedule.getLabel());
-        Date date = new GregorianCalendar(Calendar.YEAR, Calendar.MONTH, Calendar.DAY_OF_MONTH,
+        Date date = new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR),
+                Calendar.getInstance().get(Calendar.MONTH),
+                Calendar.getInstance().get(Calendar.DAY_OF_MONTH),
                 currentSchedule.getHour(), currentSchedule.getMinute()).getTime();
         String today = DateFormat.getDateInstance(DateFormat.SHORT).format(date);
         tvTimeStamp.setText(DateFormat.getTimeInstance(DateFormat.SHORT).format(date));

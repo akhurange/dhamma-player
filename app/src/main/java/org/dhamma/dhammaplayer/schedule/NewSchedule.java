@@ -53,11 +53,11 @@ public class NewSchedule extends BaseActivity implements View.OnClickListener {
             tpDialog.show();
         }
 
-        public int getHour() {
+        int getHour() {
             return mHour;
         }
 
-        public int getMinute() {
+        int getMinute() {
             return mMinute;
         }
     }
@@ -138,7 +138,9 @@ public class NewSchedule extends BaseActivity implements View.OnClickListener {
             }
         }
 
-        Date date = new GregorianCalendar(Calendar.YEAR, Calendar.MONTH, Calendar.DAY_OF_MONTH).getTime();
+        Date date = new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR),
+                Calendar.getInstance().get(Calendar.MONTH),
+                Calendar.getInstance().get(Calendar.DAY_OF_MONTH)).getTime();
         String today = DateFormat.getDateInstance(DateFormat.SHORT).format(date);
         ScheduleEntity scheduleEntity = new ScheduleEntity(etLabel.getText().toString(),
                 mTd.getHour(), mTd.getMinute(), days, mMediaType, mMediaFilesList.size(), today);
