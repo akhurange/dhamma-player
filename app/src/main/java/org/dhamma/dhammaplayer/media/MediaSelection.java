@@ -249,6 +249,7 @@ public class MediaSelection extends BaseActivity {
             } while (cursor.moveToNext());
             cursor.close();
         }
+        mMediaAdapter.notifyDataSetChanged();
     }
 
     private void browseVideoMediaFiles() {
