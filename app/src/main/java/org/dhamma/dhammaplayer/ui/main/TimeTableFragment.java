@@ -1,7 +1,5 @@
 package org.dhamma.dhammaplayer.ui.main;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -10,7 +8,6 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,14 +18,12 @@ import android.widget.TextView;
 import org.dhamma.dhammaplayer.BaseActivity;
 import org.dhamma.dhammaplayer.R;
 import org.dhamma.dhammaplayer.database.ScheduleEntity;
-import org.dhamma.dhammaplayer.medialibrary.MediaGroup;
 import org.dhamma.dhammaplayer.timetable.TimeTableAdapter;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 /**

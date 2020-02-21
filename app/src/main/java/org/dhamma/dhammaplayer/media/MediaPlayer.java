@@ -1,7 +1,5 @@
 package org.dhamma.dhammaplayer.media;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;

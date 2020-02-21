@@ -9,31 +9,22 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
 import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.GridView;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.android.exoplayer2.SimpleExoPlayer;
 
 import org.dhamma.dhammaplayer.BaseActivity;
 import org.dhamma.dhammaplayer.R;
-import org.dhamma.dhammaplayer.schedule.NewSchedule;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 public class MediaSelection extends BaseActivity {
@@ -177,10 +168,8 @@ public class MediaSelection extends BaseActivity {
         // Get the selected media set.
         Set<MediaFile> selectedMediaSet = mMediaAdapter.getSelectedMediaSet();
         // Set to list for serialization.
-        ArrayList<MediaFile> mediaList = new ArrayList<>();
-        for (MediaFile mediaFile: selectedMediaSet) {
-            mediaList.add(mediaFile);
-        }
+        ArrayList<MediaFile> mediaList = new ArrayList<MediaFile>(selectedMediaSet);
+
         // Create the return intent.
         Intent resultIntent = new Intent();
         Bundle bundle = new Bundle();

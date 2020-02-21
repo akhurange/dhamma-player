@@ -2,8 +2,6 @@ package org.dhamma.dhammaplayer.database;
 
 import android.content.Context;
 
-import org.dhamma.dhammaplayer.media.MediaSelection;
-
 import androidx.annotation.VisibleForTesting;
 import androidx.room.Database;
 import androidx.room.Room;
