@@ -27,6 +27,7 @@
         android:id="@+id/btUp"
         android:tint="@android:color/holo_blue_dark"
         android:src="@android:drawable/arrow_up_float"
+        android:backgroundTint="@android:color/transparent"
         android:contentDescription="@string/up_arrow" />
 
     <ImageButton
@@ -37,6 +38,7 @@
         android:id="@+id/btDown"
         android:tint="@android:color/holo_green_dark"
         android:src="@android:drawable/arrow_down_float"
+        android:backgroundTint="@android:color/transparent"
         android:contentDescription="@string/down_arrow" />
 
     <ImageButton
@@ -45,6 +47,7 @@
         android:layout_weight="1"
         android:id="@+id/btDelete"
         android:src="@android:drawable/ic_delete"
+        android:backgroundTint="@android:color/transparent"
         android:contentDescription="@string/delete_icon" />
 
 </LinearLayout>

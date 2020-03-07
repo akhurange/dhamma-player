@@ -80,6 +80,15 @@ public class MediaFileAdapter extends ArrayAdapter<MediaSelection.MediaFile> {
             }
         });
 
+        ImageButton ibDelete = listItemView.findViewById(R.id.btDelete);
+        ibDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mMediaFileArrayList.remove(position);
+                notifyDataSetChanged();
+            }
+        });
+
          return listItemView;
     }
 }

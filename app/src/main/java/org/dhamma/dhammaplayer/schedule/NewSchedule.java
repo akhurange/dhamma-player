@@ -195,9 +195,18 @@ public class NewSchedule extends BaseActivity implements View.OnClickListener {
 
     private void buildMediaFilesListView() {
         MediaFileAdapter mediaFileAdapter = new MediaFileAdapter(NewSchedule.this, mMediaFilesList, mMediaType);
-        ListView listView = findViewById(R.id.lvMediaFiles);
+        final ListView listView = findViewById(R.id.lvMediaFiles);
         listView.setAdapter(mediaFileAdapter);
         ListUtils.setDynamicHeight(listView);
+        listView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                ListUtils.setDynamicHeight(listView);
+                if (0 == mMediaFilesList.size()) {
+                    findViewById(R.id.rgMediaSelector).setVisibility(View.VISIBLE);
+                }
+            }
+        });
     }
 
     @Override

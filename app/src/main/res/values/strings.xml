@@ -41,6 +41,7 @@
     <!-- Media File Item  -->
     <string name="up_arrow">Move Media File Up</string>
     <string name="down_arrow">Move Media File Down</string>
+    <string name="delete_icon">Remove Media File</string>
 
     <!-- Time table fragment  -->
     <string name="today_events">Today\'s scheduled events</string>
