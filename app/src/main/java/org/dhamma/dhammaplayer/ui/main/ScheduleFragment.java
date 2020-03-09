@@ -17,6 +17,7 @@ import android.widget.ExpandableListView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.dhamma.dhammaplayer.R;
+import org.dhamma.dhammaplayer.database.MediaFileEntity;
 import org.dhamma.dhammaplayer.database.ScheduleEntity;
 import org.dhamma.dhammaplayer.schedule.NewSchedule;
 import org.dhamma.dhammaplayer.schedule.ScheduleBuilderAdapter;
@@ -36,7 +37,9 @@ public class ScheduleFragment extends Fragment {
     private ScheduleBuilderAdapter mScheduleBuilderAdapter;
     private ScheduleViewModel mScheduleViewModel;
     private ArrayList<ScheduleEntity> mScheduleList;
+    List<MediaFileEntity> mMediaFileEntities;
     private LiveData<List<ScheduleEntity>> mLiveScheduleList;
+    private LiveData<List<MediaFileEntity>> mLiveMediaFileList;
 
     public ScheduleFragment() {
         // Required empty public constructor
@@ -47,7 +50,8 @@ public class ScheduleFragment extends Fragment {
         super.onCreate(savedInstanceState);
         mScheduleViewModel = new ViewModelProvider(this).get(ScheduleViewModel.class);;
         mScheduleList = new ArrayList<ScheduleEntity>();
-        mScheduleBuilderAdapter = new ScheduleBuilderAdapter(mScheduleList, getActivity());
+        mMediaFileEntities = new ArrayList<MediaFileEntity>();
+        mScheduleBuilderAdapter = new ScheduleBuilderAdapter(getActivity());
     }
 
     @Override
@@ -73,7 +77,19 @@ public class ScheduleFragment extends Fragment {
                 startActivity(intent);
             }
         });
+        loadMediaFileList();
         buildScheduleList();
+    }
+
+    private void loadMediaFileList() {
+        mLiveMediaFileList = mScheduleViewModel.liveGetMediaFiles();
+        mLiveMediaFileList.observe(getViewLifecycleOwner(), new Observer<List<MediaFileEntity>>() {
+            @Override
+            public void onChanged(List<MediaFileEntity> mediaFileEntities) {
+                mScheduleBuilderAdapter.setMediaResourceList(mediaFileEntities);
+                mScheduleBuilderAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
     private void buildScheduleList() {
@@ -83,6 +99,7 @@ public class ScheduleFragment extends Fragment {
             public void onChanged(List<ScheduleEntity> scheduleEntities) {
                 mScheduleList.clear();
                 mScheduleList.addAll(scheduleEntities);
+                mScheduleBuilderAdapter.setScheduleList(mScheduleList);
                 mScheduleBuilderAdapter.notifyDataSetChanged();
                 final ExpandableListView elvSchedules = getView().findViewById(R.id.elvSchedules);
                 elvSchedules.setAdapter(mScheduleBuilderAdapter);

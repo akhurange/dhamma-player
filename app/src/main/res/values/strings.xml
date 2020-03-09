@@ -8,7 +8,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <!-- schedule group xml layout -->
-    <string name="delete_button_text">Delete</string>
+    <string name="delete_button_text">Delete Schedule</string>
 
     <!-- New schedule xml layout -->
     <string name="new_schedule_activity_label">New Schedule</string>

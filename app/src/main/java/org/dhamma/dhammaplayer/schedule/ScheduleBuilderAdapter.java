@@ -9,13 +9,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.google.android.material.snackbar.Snackbar;
 
+import org.dhamma.dhammaplayer.BaseActivity;
 import org.dhamma.dhammaplayer.DataRepository;
 import org.dhamma.dhammaplayer.R;
+import org.dhamma.dhammaplayer.database.MediaFileEntity;
 import org.dhamma.dhammaplayer.database.ScheduleEntity;
 
 import java.text.DateFormat;
@@ -23,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.content.ContextCompat;
@@ -30,10 +34,18 @@ import androidx.core.content.ContextCompat;
 public class ScheduleBuilderAdapter extends BaseExpandableListAdapter {
     private Context mContext;
     private ArrayList<ScheduleEntity> mScheduleEntityArrayList;
+    private MediaResource mMediaResource;
 
-    public ScheduleBuilderAdapter(ArrayList<ScheduleEntity> scheduleEntityArrayList, Context context) {
-        mScheduleEntityArrayList = scheduleEntityArrayList;
+    public ScheduleBuilderAdapter( Context context) {
         mContext = context;
+    }
+
+    public void setScheduleList(ArrayList<ScheduleEntity> scheduleEntityArrayList) {
+        mScheduleEntityArrayList = scheduleEntityArrayList;
+    }
+
+    public void setMediaResourceList(List<MediaFileEntity> mediaFileEntities) {
+        mMediaResource = new MediaResource(mContext, mediaFileEntities);
     }
 
     @Override
@@ -153,6 +165,14 @@ public class ScheduleBuilderAdapter extends BaseExpandableListAdapter {
         if (null == convertView) {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.schedule_child, parent, false);
         }
+
+        final ScheduleEntity scheduleEntity = mScheduleEntityArrayList.get(groupPosition);
+        MediaResourceAdapter mediaResourceAdapter = new MediaResourceAdapter(mContext,
+                mMediaResource.getMediaResourceForSchedule(scheduleEntity.getKey()),
+                scheduleEntity.getMediaType());
+        final ListView listView = convertView.findViewById(R.id.lvMediaFiles);
+        listView.setAdapter(mediaResourceAdapter);
+        BaseActivity.ListUtils.setDynamicHeight(listView);
 
         Button btDelete = convertView.findViewById(R.id.btDelete);
         btDelete.setFocusable(false);

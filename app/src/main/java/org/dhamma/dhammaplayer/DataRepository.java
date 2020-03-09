@@ -234,6 +234,44 @@ public class DataRepository {
         }
     }
 
+    //***** Async operation for deleting a media file. *****//
+    public void deleteMediaFile(MediaFileEntity mediaFileEntity, final OnDatabaseWriteComplete callback) {
+        MediaFileDao dao = mAppDatabase.mediaFileDao();
+        new deleteMediaFileLocalDbAsync(dao, mediaFileEntity, new deleteMediaFileLocalDbAsync.AsyncResponse() {
+            @Override
+            public void processFinish() {
+                callback.onComplete();
+            }
+        }).execute();
+    }
+
+    private static class deleteMediaFileLocalDbAsync extends AsyncTask<Void, Void, Void> {
+        public interface AsyncResponse {
+            void processFinish();
+        }
+
+        private MediaFileDao mDao;
+        private MediaFileEntity mMediaFileEntity;
+        private AsyncResponse mCallback;
+
+        deleteMediaFileLocalDbAsync(MediaFileDao dao, MediaFileEntity mediaFileEntity, AsyncResponse callback) {
+            mDao = dao;
+            mMediaFileEntity = mediaFileEntity;
+            mCallback = callback;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            mDao.deleteMediaFile(mMediaFileEntity);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            mCallback.processFinish();
+        }
+    }
+
     //***** Async operation for reading i'th media file of a schedule. *****//
     public void getMediaFileForIndex(ScheduleEntity scheduleEntity, int index, final OnMediaFileReadComplete callback) {
         MediaFileDao dao = mAppDatabase.mediaFileDao();
