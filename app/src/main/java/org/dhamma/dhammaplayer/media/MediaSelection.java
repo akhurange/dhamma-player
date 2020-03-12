@@ -25,6 +25,7 @@ import org.dhamma.dhammaplayer.R;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Set;
 
 public class MediaSelection extends BaseActivity {
@@ -78,12 +79,15 @@ public class MediaSelection extends BaseActivity {
     private SimpleExoPlayer mSimpleExoPlayer;
     private ArrayList<MediaFile> mListElementsArrayList;
     private MediaSelectionAdapter mMediaAdapter;
+    private ArrayList<String> mUsedMediaList;
     public static String MEDIA_LIST = "media_list";
+    public static String USED_MEDIA_LIST = "used_media_list";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         String mediaType = getIntent().getStringExtra(MediaPlayer.KEY_MEDIA_TYPE);
+        mUsedMediaList = (ArrayList<String>) getIntent().getSerializableExtra(USED_MEDIA_LIST);
         setContentView(R.layout.activity_media_selection);
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
@@ -202,6 +206,10 @@ public class MediaSelection extends BaseActivity {
     }
 
     private void browseAudioMediaFiles() {
+        Set<String> usedMediaSet = null;
+        if (null != mUsedMediaList) {
+            usedMediaSet = new HashSet<>(mUsedMediaList);
+        }
         ContentResolver contentResolver = getApplicationContext().getContentResolver();
         String[] projection = new String[] {
                 MediaStore.Audio.Media.DATA,
@@ -228,6 +236,12 @@ public class MediaSelection extends BaseActivity {
             int durationColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION);
             int sizeColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.SIZE);
             do {
+                if (null != usedMediaSet) {
+                    // If this file is already used in the schedule do not list it again.
+                    if (usedMediaSet.contains(cursor.getString(dataColumn))) {
+                        continue;
+                    }
+                }
                 MediaFile mediaFile = new MediaFile();
                 mediaFile.mTitle = cursor.getString(nameColumn);
                 mediaFile.mDuration = cursor.getInt(durationColumn);
@@ -242,6 +256,10 @@ public class MediaSelection extends BaseActivity {
     }
 
     private void browseVideoMediaFiles() {
+        Set<String> usedMediaSet = null;
+        if (null != mUsedMediaList) {
+            usedMediaSet = new HashSet<>(mUsedMediaList);
+        }
         ContentResolver contentResolver = getApplicationContext().getContentResolver();
         String[] projection = new String[] {
                 MediaStore.Video.Media.DATA,
@@ -268,6 +286,12 @@ public class MediaSelection extends BaseActivity {
             int durationColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION);
             int sizeColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE);
             do {
+                if (null != usedMediaSet) {
+                    // If this file is already used in the schedule do not list it again.
+                    if (usedMediaSet.contains(cursor.getString(dataColumn))) {
+                        continue;
+                    }
+                }
                 MediaFile mediaFile = new MediaFile();
                 mediaFile.mTitle = cursor.getString(nameColumn);
                 mediaFile.mDuration = cursor.getInt(durationColumn);

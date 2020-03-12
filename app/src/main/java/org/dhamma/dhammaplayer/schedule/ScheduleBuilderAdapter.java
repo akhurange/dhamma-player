@@ -3,6 +3,7 @@ package org.dhamma.dhammaplayer.schedule;
 import android.app.Activity;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +21,8 @@ import org.dhamma.dhammaplayer.DataRepository;
 import org.dhamma.dhammaplayer.R;
 import org.dhamma.dhammaplayer.database.MediaFileEntity;
 import org.dhamma.dhammaplayer.database.ScheduleEntity;
+import org.dhamma.dhammaplayer.media.MediaPlayer;
+import org.dhamma.dhammaplayer.media.MediaSelection;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -30,14 +33,21 @@ import java.util.List;
 
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 
 public class ScheduleBuilderAdapter extends BaseExpandableListAdapter {
     private Context mContext;
+    private Fragment mParentFragment;
     private ArrayList<ScheduleEntity> mScheduleEntityArrayList;
     private MediaResource mMediaResource;
+    private ScheduleEntity mCurrentSchedule;
+    private int mPreviousExpandedGroup;
+    private static final int SELECT_MEDIA_FILES_REQUEST = 1;
 
-    public ScheduleBuilderAdapter( Context context) {
+    public ScheduleBuilderAdapter(Context context, Fragment fragment) {
         mContext = context;
+        mParentFragment = fragment;
+        mPreviousExpandedGroup = -1;
     }
 
     public void setScheduleList(ArrayList<ScheduleEntity> scheduleEntityArrayList) {
@@ -49,7 +59,20 @@ public class ScheduleBuilderAdapter extends BaseExpandableListAdapter {
     }
 
     @Override
+    public void onGroupExpanded(int groupPosition) {
+        super.onGroupExpanded(groupPosition);
+        mPreviousExpandedGroup = groupPosition;
+    }
+
+    public int getPreviousExpandedGroup() {
+        return mPreviousExpandedGroup;
+    }
+
+    @Override
     public int getGroupCount() {
+        if (null == mScheduleEntityArrayList) {
+            return 0;
+        }
         return mScheduleEntityArrayList.size();
     }
 
@@ -165,28 +188,28 @@ public class ScheduleBuilderAdapter extends BaseExpandableListAdapter {
         if (null == convertView) {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.schedule_child, parent, false);
         }
-
-        final ScheduleEntity scheduleEntity = mScheduleEntityArrayList.get(groupPosition);
         MediaResourceAdapter mediaResourceAdapter = new MediaResourceAdapter(mContext,
-                mMediaResource.getMediaResourceForSchedule(scheduleEntity.getKey()),
-                scheduleEntity.getMediaType());
+                mMediaResource.getMediaResourceForSchedule(currentSchedule.getKey()),
+                currentSchedule);
         final ListView listView = convertView.findViewById(R.id.lvMediaFiles);
         listView.setAdapter(mediaResourceAdapter);
         BaseActivity.ListUtils.setDynamicHeight(listView);
 
+        Button btAddMedia = convertView.findViewById(R.id.btAddMedia);
+        btAddMedia.setFocusable(false);
+        btAddMedia.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                browseMediaFiles(currentSchedule);
+            }
+        });
+
         Button btDelete = convertView.findViewById(R.id.btDelete);
         btDelete.setFocusable(false);
-
         btDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DataRepository dataRepository = new DataRepository(mContext);
-                dataRepository.deleteSchedule(currentSchedule, new DataRepository.OnDatabaseWriteComplete() {
-                    @Override
-                    public void onComplete() {
-                        return;
-                    }
-                });
+                deleteSchedule(currentSchedule);
             }
         });
         return convertView;
@@ -195,5 +218,55 @@ public class ScheduleBuilderAdapter extends BaseExpandableListAdapter {
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {
         return true;
+    }
+
+    private void deleteSchedule(ScheduleEntity currentSchedule) {
+        DataRepository dataRepository = new DataRepository(mContext);
+        dataRepository.deleteSchedule(currentSchedule, new DataRepository.OnDatabaseWriteComplete() {
+            @Override
+            public void onComplete() {
+                return;
+            }
+        });
+    }
+
+    private void browseMediaFiles(ScheduleEntity currentSchedule) {
+        // Save the current schedule for future reference o work onActivityResult.
+        mCurrentSchedule = currentSchedule;
+        ArrayList<MediaFileEntity> mediaFileEntityArrayList = mMediaResource.getMediaResourceForSchedule(currentSchedule.getKey());
+        Intent intent = new Intent(mContext, MediaSelection.class);
+        intent.putExtra(MediaPlayer.KEY_MEDIA_TYPE, currentSchedule.getMediaType());
+        if (null != mediaFileEntityArrayList) {
+            ArrayList<String> usedMediaList = new ArrayList<String>();
+            for (MediaFileEntity mediaFileEntity : mediaFileEntityArrayList) {
+                usedMediaList.add(mediaFileEntity.getMediaPath());
+            }
+            intent.putExtra(MediaSelection.USED_MEDIA_LIST, usedMediaList);
+        }
+        mParentFragment.startActivityForResult(intent, SELECT_MEDIA_FILES_REQUEST);
+    }
+
+    public void addMediaResource(ArrayList<MediaSelection.MediaFile> mediaFilesList) {
+        final ArrayList<MediaFileEntity> mediaFileEntityArrayList = new ArrayList<>();
+        int nextMediaIndex = mCurrentSchedule.getMediaCount();
+        for (MediaSelection.MediaFile mediaFile : mediaFilesList) {
+            mediaFileEntityArrayList.add(new MediaFileEntity(mCurrentSchedule.getKey(), mediaFile.mFilePath, mediaFile.mTitle, nextMediaIndex));
+            nextMediaIndex++;
+        }
+
+        MediaFileEntity[] mediaFileEntities = new MediaFileEntity[mediaFileEntityArrayList.size()];
+        final DataRepository dataRepository = new DataRepository(mContext);
+        dataRepository.insertMediaFile(mediaFileEntityArrayList.toArray(mediaFileEntities), new DataRepository.OnDatabaseWriteComplete() {
+            @Override
+            public void onComplete() {
+                mCurrentSchedule.setMediaCount(mediaFileEntityArrayList.size());
+                dataRepository.updateSchedule(mCurrentSchedule, new DataRepository.OnDatabaseWriteComplete() {
+                    @Override
+                    public void onComplete() {
+                        return;
+                    }
+                });
+            }
+        });
     }
 }

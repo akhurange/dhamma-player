@@ -9,6 +9,7 @@
 
     <!-- schedule group xml layout -->
     <string name="delete_button_text">Delete Schedule</string>
+    <string name="add_media_button_text">Add Media Files</string>
 
     <!-- New schedule xml layout -->
     <string name="new_schedule_activity_label">New Schedule</string>

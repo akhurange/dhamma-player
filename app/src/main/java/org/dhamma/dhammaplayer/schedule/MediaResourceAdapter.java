@@ -12,6 +12,7 @@ import android.widget.TextView;
 import org.dhamma.dhammaplayer.DataRepository;
 import org.dhamma.dhammaplayer.R;
 import org.dhamma.dhammaplayer.database.MediaFileEntity;
+import org.dhamma.dhammaplayer.database.ScheduleEntity;
 import org.dhamma.dhammaplayer.media.MediaPlayer;
 
 import java.util.ArrayList;
@@ -22,15 +23,23 @@ import androidx.annotation.Nullable;
 public class MediaResourceAdapter extends ArrayAdapter<MediaFileEntity> {
     private Context mContext;
     private ArrayList<MediaFileEntity> mMediaFileEntityArrayList;
-    private String mMediaType;
+    private ScheduleEntity mScheduleEntity;
     private DataRepository mDataRepository;
 
-    public MediaResourceAdapter(Context context, ArrayList<MediaFileEntity> mediaFileArrayList, String mediaType) {
+    public MediaResourceAdapter(Context context, ArrayList<MediaFileEntity> mediaFileArrayList, ScheduleEntity scheduleEntity) {
         super(context, 0, mediaFileArrayList);
         mContext = context;
         mMediaFileEntityArrayList = mediaFileArrayList;
-        mMediaType = mediaType;
+        mScheduleEntity = scheduleEntity;
         mDataRepository = new DataRepository(mContext);
+    }
+
+    @Override
+    public int getCount() {
+        if (null == mMediaFileEntityArrayList) {
+            return 0;
+        }
+        return mMediaFileEntityArrayList.size();
     }
 
     @NonNull
@@ -49,7 +58,7 @@ public class MediaResourceAdapter extends ArrayAdapter<MediaFileEntity> {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, MediaPlayer.class);
-                intent.putExtra(MediaPlayer.KEY_MEDIA_TYPE, mMediaType);
+                intent.putExtra(MediaPlayer.KEY_MEDIA_TYPE, mScheduleEntity.getMediaType());
                 intent.putExtra(MediaPlayer.KEY_MEDIA_PATH, currentMediaFile.getMediaPath());
                 intent.putExtra(MediaPlayer.KEY_MEDIA_TITLE, currentMediaFile.getMediaTitle());
                 mContext.startActivity(intent);
@@ -112,7 +121,13 @@ public class MediaResourceAdapter extends ArrayAdapter<MediaFileEntity> {
         mDataRepository.insertMediaFile(mMediaFileEntityArrayList.toArray(mediaFileEntities), new DataRepository.OnDatabaseWriteComplete() {
             @Override
             public void onComplete() {
-                return;
+                mScheduleEntity.setMediaCount(mMediaFileEntityArrayList.size());
+                mDataRepository.updateSchedule(mScheduleEntity, new DataRepository.OnDatabaseWriteComplete() {
+                    @Override
+                    public void onComplete() {
+                        return;
+                    }
+                });
             }
         });
     }

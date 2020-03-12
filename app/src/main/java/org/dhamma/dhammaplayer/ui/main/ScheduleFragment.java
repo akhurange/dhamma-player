@@ -1,5 +1,6 @@
 package org.dhamma.dhammaplayer.ui.main;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -19,6 +20,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import org.dhamma.dhammaplayer.R;
 import org.dhamma.dhammaplayer.database.MediaFileEntity;
 import org.dhamma.dhammaplayer.database.ScheduleEntity;
+import org.dhamma.dhammaplayer.media.MediaSelection;
 import org.dhamma.dhammaplayer.schedule.NewSchedule;
 import org.dhamma.dhammaplayer.schedule.ScheduleBuilderAdapter;
 
@@ -40,6 +42,7 @@ public class ScheduleFragment extends Fragment {
     List<MediaFileEntity> mMediaFileEntities;
     private LiveData<List<ScheduleEntity>> mLiveScheduleList;
     private LiveData<List<MediaFileEntity>> mLiveMediaFileList;
+    private static final int SELECT_MEDIA_FILES_REQUEST = 1;
 
     public ScheduleFragment() {
         // Required empty public constructor
@@ -51,7 +54,7 @@ public class ScheduleFragment extends Fragment {
         mScheduleViewModel = new ViewModelProvider(this).get(ScheduleViewModel.class);;
         mScheduleList = new ArrayList<ScheduleEntity>();
         mMediaFileEntities = new ArrayList<MediaFileEntity>();
-        mScheduleBuilderAdapter = new ScheduleBuilderAdapter(getActivity());
+        mScheduleBuilderAdapter = new ScheduleBuilderAdapter(getActivity(), ScheduleFragment.this);
     }
 
     @Override
@@ -79,6 +82,8 @@ public class ScheduleFragment extends Fragment {
         });
         loadMediaFileList();
         buildScheduleList();
+        final ExpandableListView elvSchedules = getView().findViewById(R.id.elvSchedules);
+        elvSchedules.setAdapter(mScheduleBuilderAdapter);
     }
 
     private void loadMediaFileList() {
@@ -101,9 +106,19 @@ public class ScheduleFragment extends Fragment {
                 mScheduleList.addAll(scheduleEntities);
                 mScheduleBuilderAdapter.setScheduleList(mScheduleList);
                 mScheduleBuilderAdapter.notifyDataSetChanged();
-                final ExpandableListView elvSchedules = getView().findViewById(R.id.elvSchedules);
-                elvSchedules.setAdapter(mScheduleBuilderAdapter);
             }
         });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (SELECT_MEDIA_FILES_REQUEST == requestCode) {
+            if (Activity.RESULT_OK == resultCode) {
+                Bundle bundle = data.getExtras();
+                ArrayList<MediaSelection.MediaFile> mediaFilesList = (ArrayList<MediaSelection.MediaFile>) bundle.getSerializable(MediaSelection.MEDIA_LIST);
+                mScheduleBuilderAdapter.addMediaResource(mediaFilesList);
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }
