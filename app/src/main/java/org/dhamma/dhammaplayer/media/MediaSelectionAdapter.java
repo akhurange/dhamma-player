@@ -11,8 +11,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -110,9 +112,11 @@ public class MediaSelectionAdapter extends RecyclerView.Adapter<MediaSelectionAd
         TextView mTvMediaTitle;
         TextView mTvMediaDetails;
         ImageButton mPlayPauseButton;
+        LinearLayout mParentView;
 
         MediaViewHolder(@NonNull View itemView) {
             super(itemView);
+            mParentView = (LinearLayout)itemView.findViewById(R.id.llParent);
             mCheckBox = (CheckBox)itemView.findViewById(R.id.cbMediaFile);
             mTvMediaTitle = (TextView)itemView.findViewById(R.id.tvMediaTitle);
             mTvMediaDetails = (TextView)itemView.findViewById(R.id.tvDetails);
@@ -139,16 +143,22 @@ public class MediaSelectionAdapter extends RecyclerView.Adapter<MediaSelectionAd
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MediaSelectionAdapter.MediaViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final MediaSelectionAdapter.MediaViewHolder holder, int position) {
         final MediaSelection.MediaFile mediaFile = mMediaFileArrayList.get(position);
         holder.mTvMediaTitle.setText(mediaFile.mTitle);
         String mediaDetails = "Duration: " + mediaFile.mReadableDuration;
         holder.mTvMediaDetails.setText(mediaDetails);
         holder.mCheckBox.setChecked(false);
-        holder.mCheckBox.setOnClickListener(new View.OnClickListener() {
+        holder.mParentView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (((CheckBox)v).isChecked()) {
+                holder.mCheckBox.setChecked(!holder.mCheckBox.isChecked());
+            }
+        });
+        holder.mCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked){
                     // Media file selected add to the set.
                     mSelectedMediaSet.add(mediaFile);
                     if (1 == mSelectedMediaSet.size()) {
