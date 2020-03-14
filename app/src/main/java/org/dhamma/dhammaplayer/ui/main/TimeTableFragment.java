@@ -72,7 +72,13 @@ public class TimeTableFragment extends Fragment {
             @Override
             public void onChanged(List<ScheduleEntity> scheduleEntities) {
                 mScheduleList.clear();
-                mScheduleList.addAll(scheduleEntities);
+                for (ScheduleEntity scheduleEntity : scheduleEntities) {
+                    if ((!scheduleEntity.getActiveStatus()) ||
+                            (0 == scheduleEntity.getMediaCount())) {
+                        continue;
+                    }
+                    mScheduleList.add(scheduleEntity);
+                }
                 mTimeTableAdapter.notifyDataSetChanged();
                 final ListView listView = getView().findViewById(R.id.lvEvents);
                 listView.setAdapter(mTimeTableAdapter);

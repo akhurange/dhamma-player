@@ -86,6 +86,9 @@ public class MediaLibraryFragment extends Fragment {
             public void onChanged(List<ScheduleEntity> scheduleEntities) {
                 mMediaGroupList.clear();
                 for (ScheduleEntity scheduleEntity : scheduleEntities) {
+                    if (0 == scheduleEntity.getMediaCount()) {
+                        continue;
+                    }
                     mMediaGroupList.add(new MediaGroup(scheduleEntity));
                 }
                 mMediaExpandableListAdapter.notifyDataSetChanged();
